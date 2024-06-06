@@ -29,10 +29,12 @@ This piece of software is simple console database for storing plain text documen
     - Command for deleting specified document from the collection
 - `FIND <keyWords> IN <collectionName>`
     - Command for finding keywords in collection
-    - it will print out a score, which indicates how relevant the document is for the query, and document names
-    - for names which are not present in any document ot will print nothing and for key words which are on the other hand present in every docuement it
+    - it will print out list of pairs
+        - where the pair consists of a score, which indicates how relevant the document is for the query and docuement name for that
+    - if you will search for key words where none of them are present in collection, then the result will be empty and nothing will be printed
+    - on the other hand if you will search for word which is present in all of the documents the score will be NaN
     - `<keyWords>` should be a list of key words, where all have to be delimited by at least one space (there can be also commas, which are ignored)
-        - be careful, that key word `in` will be taken as a command key word and therefor the next token will be considered as a collection name. This word is also present in stopWords so it isn't great idea to search for it
+        - be careful, that key word `in` will be taken as a command key word and therefor the next token will be considered as a collection name. This word is also present in stopWords so it isn't great idea to search for it and it is also reason why this fact is ignored
 
 - after each command the message about successfull result is printed out
     - for adding document that the document was created, for removing that the document was removed, ...
