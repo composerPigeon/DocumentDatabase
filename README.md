@@ -30,7 +30,10 @@ This piece of software is simple console database for storing plain text documen
 - `FIND <keyWords> IN <collectionName>`
     - Command for finding keywords in collection
     - it will print out a score, which indicates how relevant the document is for the query, and document names
-    - for names which are not present in any document ot will print nothing and for key words which are on the other hand present in every docuement it 
+    - for names which are not present in any document ot will print nothing and for key words which are on the other hand present in every docuement it
+    - `<keyWords>` should be a list of key words, where all have to be delimited by at least one space (there can be also commas, which are ignored)
+        - be careful, that key word `in` will be taken as a command key word and therefor the next token will be considered as a collection name. This word is also present in stopWords so it isn't great idea to search for it
+
 - after each command the message about successfull result is printed out
     - for adding document that the document was created, for removing that the document was removed, ...
     - after get document command just the docuemnts content is printed out
