@@ -1,0 +1,13 @@
+{
+  "_documentCount": 2,
+  "_wordDocumentCounts": {
+    "xd": 1
+  },
+  "_wordByDocumentTF": {
+    "xd": {
+      "doc2": 1
+    }
+  },
+  "Name": "coll_index",
+  "Path": "Data/coll/index.json"
+}

@@ -1,0 +1,11 @@
+{
+  "Stats": {
+    "WordsTF": {
+      "xd": 1
+    },
+    "DocumentName": "doc2"
+  },
+  "_contentPath": "Data/coll/doc2.txt",
+  "Name": "doc2",
+  "Path": "Data/coll/doc2.json"
+}
