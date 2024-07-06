@@ -1,6 +1,6 @@
-namespace Database_DbComponents;
+namespace DatabaseNS.Components;
 
-using Database_DocumentParser;
+using DatabaseNS.DocumentParserNS;
 using DatabaseNS;
 
 using System.Text.Json;

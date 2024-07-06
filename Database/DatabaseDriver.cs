@@ -1,6 +1,6 @@
 namespace DatabaseNS;
 
-using Database_DbComponents;
+using DatabaseNS.Components;
 
 public abstract class DatabaseDriver {
     public string Path { get; }

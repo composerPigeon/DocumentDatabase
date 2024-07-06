@@ -1,4 +1,4 @@
-namespace Database_DbComponents;
+namespace DatabaseNS.Components;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;

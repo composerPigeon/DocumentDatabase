@@ -1,6 +1,6 @@
-﻿using Database_DbComponents;
+﻿namespace DatabaseNS;
 
-namespace DatabaseNS;
+using DatabaseNS.Components;
 
 class Program
 {

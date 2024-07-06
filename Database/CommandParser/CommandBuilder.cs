@@ -1,9 +1,7 @@
-using System.ComponentModel;
-using System.Dynamic;
-using Database_DbComponents;
-using DatabaseNS;
+namespace DatabaseNS.CommandParserNS;
 
-namespace Database_CommandParser;
+using DatabaseNS.Components;
+using DatabaseNS;
 
 internal class CommandBuilder {
     

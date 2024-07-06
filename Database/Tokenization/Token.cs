@@ -1,4 +1,4 @@
-namespace Database_Tokenization;
+namespace DatabaseNS.Tokenization;
 
 internal struct Token {
     public string? Word {get; }

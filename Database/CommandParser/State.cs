@@ -1,8 +1,8 @@
-namespace Database_CommandParser;
+namespace DatabaseNS.CommandParserNS;
 
 using DatabaseNS;
-using Database_Tokenization;
-using Database_DbComponents;
+using DatabaseNS.Tokenization;
+using DatabaseNS.Components;
 
 internal abstract class State {
     public ComponentName? CollectionName {get; protected set;}

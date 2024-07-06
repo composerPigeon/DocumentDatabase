@@ -1,6 +1,6 @@
-using System.Collections;
+namespace DatabaseNS.Components;
 
-namespace Database_DbComponents;
+using System.Collections;
 internal class IndexQueryEnumerator : IEnumerator<IndexQueryRecord> {
 
     private SortedList<ComponentName, double>[] _termLists;

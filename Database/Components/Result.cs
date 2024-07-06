@@ -1,6 +1,5 @@
-using System.Dynamic;
+namespace DatabaseNS.Components;
 
-namespace Database_DbComponents;
 
 public struct Result {
     public string Message { get; init; }

@@ -1,6 +1,6 @@
-﻿namespace Database_CommandParser;
+﻿namespace DatabaseNS.CommandParserNS;
 
-using Database_Tokenization;
+using DatabaseNS.Tokenization;
 using DatabaseNS;
 
 public class CommandParseException : Exception {

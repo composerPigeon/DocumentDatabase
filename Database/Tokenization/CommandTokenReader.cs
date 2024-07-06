@@ -1,7 +1,5 @@
-namespace Database_Tokenization;
+namespace DatabaseNS.Tokenization;
 
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Text;
 
 internal class CommandTokenReader : TokenReader {

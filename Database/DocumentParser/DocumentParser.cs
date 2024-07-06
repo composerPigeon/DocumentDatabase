@@ -1,7 +1,7 @@
-namespace Database_DocumentParser;
+namespace DatabaseNS.DocumentParserNS;
 
-using Database_DbComponents;
-using Database_Tokenization;
+using DatabaseNS.Components;
+using DatabaseNS.Tokenization;
 
 internal class DocumentParser {
     public static HashSet<string>? StopWords;

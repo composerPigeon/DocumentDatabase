@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
-
-namespace Database_DbComponents;
+namespace DatabaseNS.Components;
 
 internal abstract class DatabaseComponent {
     public ComponentName Name { get; }

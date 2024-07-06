@@ -1,8 +1,8 @@
+namespace DatabaseNS.Components;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Database_DocumentParser;
-
-namespace Database_DbComponents;
+using DatabaseNS.DocumentParserNS;
 
 internal class Document : DatabaseComponent {
 

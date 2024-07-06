@@ -1,0 +1,9 @@
+{
+  "Stats": {
+    "WordsTF": {},
+    "DocumentName": "hello"
+  },
+  "_contentPath": "Data/coll/hello.txt",
+  "Name": "hello",
+  "Path": "Data/coll/hello.json"
+}

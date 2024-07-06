@@ -1,7 +1,6 @@
-using Database_DbComponents;
-using DatabaseNS;
+namespace DatabaseNS.DocumentParserNS;
 
-namespace Database_DocumentParser;
+using DatabaseNS.Components;
 
 internal class DocumentStatsBuilder {
     private Dictionary<string, ulong> _wordCounts;

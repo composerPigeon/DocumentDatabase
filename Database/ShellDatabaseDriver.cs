@@ -1,7 +1,7 @@
 namespace DatabaseNS;
 
-using Database_CommandParser;
-using Database_DbComponents;
+using DatabaseNS.CommandParserNS;
+using DatabaseNS.Components;
 
 public class ShellDatabaseDriver : DatabaseDriver{
 

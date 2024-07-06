@@ -1,18 +1,18 @@
-namespace Database_CommandParser;
+namespace DatabaseNS.CommandParserNS;
 
-using Database_DbComponents;
+using DatabaseNS.Components;
 
 internal enum CommandType {
     CreateColletion, // CREATE collectionName;
     DropCollection, // DROP collectionName;
+    UpdateCollection,
     GetDocument, // GET documentName FROM collectionName;
     AddDocument, // ADD fileName AS documentName TO collectionName;
-    //BulkLoadDocuments, // LOAD fileName1, fileName2, ... AS documentName1, documentName2, ... TO collectionName;
     RemoveDocument, // REMOVE documentName FROM collectionName
-    //BulkRemoveDocuments,
     Find,
     Start,
     Exit,
+    SetDirectory,
     ShutDown
 }
 

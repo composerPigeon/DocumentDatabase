@@ -1,4 +1,4 @@
-namespace Database_DbComponents;
+namespace DatabaseNS.Components;
 
 internal class DocumentStats {
 

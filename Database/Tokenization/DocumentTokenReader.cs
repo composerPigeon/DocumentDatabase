@@ -1,8 +1,7 @@
-namespace Database_Tokenization;
+namespace DatabaseNS.Tokenization;
 
-using System.ComponentModel;
 using System.Text;
-using Database_DbComponents;
+using DatabaseNS.Components;
 
 internal class DocumentTokenReader : TokenReader {
 

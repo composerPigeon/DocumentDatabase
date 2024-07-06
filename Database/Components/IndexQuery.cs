@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Runtime.InteropServices;
+namespace DatabaseNS.Components;
 
-namespace Database_DbComponents;
+using System.Collections;
 
 internal struct IndexQueryRecord {
     public ComponentName Name {get;}

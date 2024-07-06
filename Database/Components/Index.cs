@@ -1,10 +1,8 @@
-using System.Linq.Expressions;
+namespace DatabaseNS.Components;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Database_CommandParser;
 using DatabaseNS;
-
-namespace Database_DbComponents;
 
 internal struct IndexRecord : IComparable<IndexRecord> {
     public ComponentName DocumentName {get;}
