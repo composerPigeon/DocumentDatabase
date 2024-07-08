@@ -20,6 +20,8 @@ This piece of software is simple console database for storing plain text documen
     - Command which will create a collection of specified name
 - `DROP <collectionName>`
     - Command which will delete existent collection of specified name
+- `TRESHHOLD <value> FOR <collectionName>`
+    - sets new query treshhold for specified collection
 - `ADD ${<documentContent>}$ AS <documentName> TO <colllectionName>`
     - Command which will create new document of given name and content in specified collection
     - `${...}$` are content delimiters and anything between them is taken as it is and saved as a document content
@@ -33,8 +35,8 @@ This piece of software is simple console database for storing plain text documen
         - where the pair consists of a score, which indicates how relevant the document is for the query and docuement name for that
     - if you will search for key words where none of them are present in collection, then the result will be empty and nothing will be printed
     - on the other hand if you will search for word which is present in all of the documents the score will be NaN
-    - `<keyWords>` should be a list of key words, where all have to be delimited by at least one space (there can be also commas, which are ignored)
-        - be careful, that key word `in` will be taken as a command key word and therefor the next token will be considered as a collection name. This word is also present in stopWords so it isn't great idea to search for it and it is also reason why this fact is ignored
+    - `<keyWords>` should be a list of key words, where all have to be delimited by at least one space
+        - be careful, that key word `in` will be taken as a command key word and therefore the next token will be considered as a collection name. This word is also present in stopWords so it isn't great idea to search for it and it is also reason why this fact is ignored
 
 - after each command the message about successfull result is printed out
     - for adding document that the document was created, for removing that the document was removed, ...
