@@ -13,6 +13,10 @@ internal class Collection : DatabaseComponent{
         _index = index;
     }
 
+    public Result SetTreshhold(double treshhold) {
+        return _index.SetTreshhold(treshhold);
+    }
+
     public Result GetDocument(ComponentName documentName) {
         if (_documents.ContainsKey(documentName)) {
             return _documents[documentName].GetContent();

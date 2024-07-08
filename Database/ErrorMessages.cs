@@ -12,6 +12,8 @@ internal static class ErrorMessages {
     public static readonly string COMMANDPARSE_LONG = "Command is too long.";
     public static readonly string COMMAND_INVALID = "Invalid command inputed.";
 
+    public static readonly string TRESHHOLD_INVALID_VALUE = "Inputed value of treshhold has invalid format. It must be double.";
+
     public static readonly string QUERY_INVALID = "Invalid query.";
 
     public static readonly string INDEX_LOAD = "Index for some collection couldn't be loaded.";

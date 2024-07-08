@@ -40,6 +40,13 @@ internal class Database : DatabaseComponent {
         throw new InvalidOperationException(ErrorMessages.COLLECTION_MISSING);
     }
 
+    public Result SetTreshhold(ComponentName collectionName, double treshhold) {
+        if (_collections.ContainsKey(collectionName))
+            return _collections[collectionName].SetTreshhold(treshhold);
+        else
+            throw new InvalidOperationException(ErrorMessages.COLLECTION_MISSING);
+    }
+
     public Result GetDocument(ComponentName collectionName, ComponentName documentName) {
         if (_collections.ContainsKey(collectionName)) {
             return _collections[collectionName].GetDocument(documentName);

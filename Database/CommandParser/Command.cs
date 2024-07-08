@@ -5,14 +5,13 @@ using DatabaseNS.Components;
 internal enum CommandType {
     CreateColletion, // CREATE collectionName;
     DropCollection, // DROP collectionName;
-    UpdateCollection,
     GetDocument, // GET documentName FROM collectionName;
     AddDocument, // ADD fileName AS documentName TO collectionName;
     RemoveDocument, // REMOVE documentName FROM collectionName
     Find,
     Start,
     Exit,
-    SetDirectory,
+    SetTreshhold,
     ShutDown
 }
 

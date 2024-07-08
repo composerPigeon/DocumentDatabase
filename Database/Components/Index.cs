@@ -29,17 +29,22 @@ internal class Index : DatabaseComponent {
     [JsonInclude]
     private Dictionary<string, SortedList<ComponentName, double>> _wordByDocumentTF;
 
+    [JsonInclude]
+    private double _queryTreshhold;
+
     private Index(ComponentName name, ComponentPath path ) : base(name, path) {
         _wordByDocumentTF = new Dictionary<string, SortedList<ComponentName, double>>();
         _wordDocumentCounts = new Dictionary<string, ulong>();
         _documentCount = 0;
+        _queryTreshhold = 0.5;
     }
 
     [JsonConstructor]
-    private Index(ComponentName Name, ComponentPath Path, Dictionary<string, SortedList<ComponentName, double>> _wordByDocumentTF, Dictionary<string, ulong> _wordDocumentCounts, ulong _documentCount) : base(Name, Path) {
+    private Index(ComponentName Name, ComponentPath Path, Dictionary<string, SortedList<ComponentName, double>> _wordByDocumentTF, Dictionary<string, ulong> _wordDocumentCounts, ulong _documentCount, double _queryTreshhold) : base(Name, Path) {
         this._wordByDocumentTF = _wordByDocumentTF;
         this._wordDocumentCounts = _wordDocumentCounts;
         this._documentCount = _documentCount;
+        this._queryTreshhold = _queryTreshhold;
     }
 
     private double calculateIDF(string term) {
@@ -47,6 +52,14 @@ internal class Index : DatabaseComponent {
             return Math.Log2((double)_documentCount/_wordDocumentCounts[term]);
         else
             return 0;
+    }
+
+    public Result SetTreshhold(double treshhold) {
+        if (treshhold <= 1 && treshhold >= 0)
+            _queryTreshhold = treshhold;
+        else
+            throw new InvalidOperationException("Treshold value must be in range from 0 to 1.");
+        return new Result("Treshhold was successfully set.");
     }
 
     public void AddDocument(DocumentStats stats) {
@@ -63,12 +76,6 @@ internal class Index : DatabaseComponent {
         }
     }
 
-    public void LoadDocuments(DocumentStats[] stats) {
-        foreach (DocumentStats documentStats in stats) {
-            AddDocument(documentStats);
-        }
-    }
-
     public void RemoveDocument(DocumentStats stats) {
         _documentCount -= 1;
         foreach(var entry in stats.WordsTF) {
@@ -80,22 +87,6 @@ internal class Index : DatabaseComponent {
             if (_wordByDocumentTF.ContainsKey(entry.Key))
                 _wordByDocumentTF[entry.Key].Remove(stats.DocumentName);
         }
-    }
-
-    public void RemoveDocuments(DocumentStats[] stats) {
-        foreach (DocumentStats documentStats in stats) {
-            RemoveDocument(documentStats);
-        }
-    }
-
-    private double[] calculateTfIdfForDocument(double[] tfDocument, double[] idf) {
-        List<double> result = new List<double>();
-        if (tfDocument.Length == idf.Length) {
-            for (int i = 0; i < tfDocument.Length; i++) {
-                result.Add(tfDocument[i] * idf[i]);
-            }
-        }
-        return result.ToArray();
     }
 
     private double calculateCosineSimilarity(double[] query, double[] document, double[] idfs) {
@@ -162,7 +153,9 @@ internal class Index : DatabaseComponent {
         IndexQuery indexQuery = new IndexQuery(keyWords, _wordByDocumentTF);
 
         foreach (IndexQueryRecord record in indexQuery) {
-            result.Add(new IndexRecord(record.Name, calculateCosineSimilarity(query, record.Values, queryIDFs)));
+            double recordScore = calculateCosineSimilarity(query, record.Values, queryIDFs);
+            if (recordScore >= _queryTreshhold)
+                result.Add(new IndexRecord(record.Name, recordScore));
         }
         result.Sort();
         return result;

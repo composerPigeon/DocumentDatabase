@@ -16,8 +16,6 @@ public class ShellDatabaseDriver : DatabaseDriver{
         } catch (Exception e) when (e is InvalidOperationException || e is CommandParseException || e is DatabaseLoadException) {
             return new Result(e.Message);
         } 
-        
-        
     }
 
     private Result processCommand(Command command) {
@@ -51,6 +49,16 @@ public class ShellDatabaseDriver : DatabaseDriver{
                     } else {
                         throw new InvalidOperationException(ErrorMessages.COMMAND_INVALID);
                     }
+                case CommandType.SetTreshhold:
+                    if (command.CollectionName.HasValue && command.Content.Length == 1) {
+                        double treshhold;
+                        if (Double.TryParse(command.Content[0], out treshhold)) {
+                            return _database.SetTreshhold(command.CollectionName.Value, treshhold);
+                        } else {
+                            throw new InvalidOperationException(ErrorMessages.TRESHHOLD_INVALID_VALUE);
+                        }
+                    } else
+                        throw new InvalidOperationException(ErrorMessages.COMMAND_INVALID);
                 case CommandType.Exit:
                     _database.ShutDown();
                     return new Result("Database shutted down.", Environment.Exit);

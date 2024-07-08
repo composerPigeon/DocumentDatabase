@@ -2647,6 +2647,7 @@
       "anaconda": 0.25
     }
   },
+  "_queryTreshhold": 0.6,
   "Name": "anim_index",
   "Path": "Data/anim/index.json"
 }

@@ -60,6 +60,9 @@ internal class StartState : State {
             case "find":
                 Type = CommandType.Find;
                 return new ContentState(this);
+            case "treshhold":
+                Type = CommandType.SetTreshhold;
+                return new ContentState(this);
             default:
                 throw new CommandParseException(ErrorMessages.COMMANDPARSE_INVALID_TOKEN);
         }
@@ -113,20 +116,26 @@ internal class DocumentState : State {
 internal class ContentState : State {
     public ContentState(State state) : base(state) {}
 
-    private State nextStateWithAddDocument(Token token) {
-        if (token.Word != null)
-            if (token.Word == "as") {
-                if (Content.Count == 1)
-                    return new DocumentState(this);
+    private State nextStateWithOneContent(Token token, string keyWord) {
+        if (token.Word != null) {
+            if (token.Word == keyWord) {
+                if (Content.Count == 1) {
+                    if (keyWord == "for")
+                        return new CollectionState(this);
+                    else
+                        return new DocumentState(this); 
+                }
                 else
                     throw new CommandParseException(ErrorMessages.COMMANDPARSE_INVALID_TOKEN);
             } else {
                 Content.Add(token.Word);
-                if (Content.Count > 1) {
+                if (Content.Count > 1)
                     throw new CommandParseException(ErrorMessages.COMMANDPARSE_INVALID_TOKEN);
-                }
                 return this;
+                
             }
+        } else if (token.IsLast)
+            throw new CommandParseException(ErrorMessages.COMMANDPARSE_INVALID_TOKEN);
         else
             throw new CommandParseException(ErrorMessages.COMMANDPARSE_EOF);
     }
@@ -146,9 +155,11 @@ internal class ContentState : State {
     public override State NextState(Token token) {
         switch(Type) {
             case CommandType.AddDocument:
-                return nextStateWithAddDocument(token);
+                return nextStateWithOneContent(token, "as");
             case CommandType.Find:
                 return nextStateWithFind(token);
+            case CommandType.SetTreshhold:
+                return nextStateWithOneContent(token, "for");
             default:
                 throw new CommandParseException(ErrorMessages.COMMAND_INVALID);
         }

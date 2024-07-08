@@ -30,7 +30,7 @@ internal class CommandTokenReader : TokenReader {
                     _state = ReaderState.InWord;
                 }
             } else if (_state == ReaderState.InWord) {
-                if (!char.IsWhiteSpace(c) && c != ',') {
+                if (!char.IsWhiteSpace(c)) {
                     _buffer.Append(c);
                 } else {
                     _state = ReaderState.Out;

@@ -18,7 +18,6 @@ internal class IndexQuery : IEnumerable<IndexQueryRecord> {
 
     public IndexQuery(string[] keyWords, Dictionary<string, SortedList<ComponentName, double>> wordByDocumentTF) {
         var termLists = new List<SortedList<ComponentName, double>>();
-        var termIDFS = new List<double>();
         foreach (var term in keyWords) {
             if (wordByDocumentTF.ContainsKey(term)) {
                 termLists.Add(wordByDocumentTF[term]);
