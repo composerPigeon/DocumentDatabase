@@ -1,4 +1,4 @@
-namespace DatabaseNS.Components;
+namespace DatabaseNS;
 
 
 public struct Result {
@@ -10,7 +10,7 @@ public struct Result {
         Action = null;
     }
 
-    public Result(string message, Action<int>? action) {
+    public Result(string message, Action<int> action) {
         Message = message;
         Action = action;
     }

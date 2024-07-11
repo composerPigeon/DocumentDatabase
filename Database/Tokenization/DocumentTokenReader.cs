@@ -12,8 +12,8 @@ internal class DocumentTokenReader : TokenReader {
 
     private List<char> _punctuation;
 
-    public DocumentTokenReader(ComponentPath path) {
-        _reader = path.GetReader();
+    public DocumentTokenReader(string content) {
+        _reader = new StringReader(content);
         _state = ReaderState.Out;
         _buffer = new StringBuilder();
         _punctuation = new List<char>(){'.', ',', ':', '!', '?', ';'};

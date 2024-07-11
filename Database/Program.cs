@@ -6,7 +6,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        DatabaseDriver database = new ShellDatabaseDriver("Data");
+        DatabaseDriver database = new ShellDatabaseDriver();
 
         while (true) {
             string? input = Console.ReadLine();

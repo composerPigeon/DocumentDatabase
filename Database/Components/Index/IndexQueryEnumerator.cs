@@ -1,4 +1,4 @@
-namespace DatabaseNS.Components;
+namespace DatabaseNS.Components.IndexNS;
 
 using System.Collections;
 

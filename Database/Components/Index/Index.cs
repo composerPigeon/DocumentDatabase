@@ -1,24 +1,11 @@
-namespace DatabaseNS.Components;
+namespace DatabaseNS.Components.IndexNS;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS;
+using DatabaseNS.Components.Builders;
 
-internal struct IndexRecord : IComparable<IndexRecord> {
-    public ComponentName DocumentName {get;}
-    public double Score {get;}
-
-    public int CompareTo(IndexRecord other) {
-        return -Score.CompareTo(other.Score);
-    }
-
-    public IndexRecord(ComponentName name, double score) {
-        DocumentName = name;
-        Score = score;
-    }
-}
-
-internal class Index : DatabaseComponent {
+internal class Index : DatabaseComponent, IComponentCreatable<Index> {
 
     [JsonInclude]
     private ulong _documentCount;
@@ -62,7 +49,7 @@ internal class Index : DatabaseComponent {
         return new Result("Treshhold was successfully set.");
     }
 
-    public void AddDocument(DocumentStats stats) {
+    public void AddDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount += 1;
         foreach(var entry in stats.WordsTF) {
             if (_wordByDocumentTF.ContainsKey(entry.Key))
@@ -72,11 +59,11 @@ internal class Index : DatabaseComponent {
             
             if (!_wordByDocumentTF.ContainsKey(entry.Key))
                 _wordByDocumentTF[entry.Key] = new SortedList<ComponentName, double>();
-            _wordByDocumentTF[entry.Key].Add(stats.DocumentName, entry.Value);
+            _wordByDocumentTF[entry.Key].Add(documentName, entry.Value);
         }
     }
 
-    public void RemoveDocument(DocumentStats stats) {
+    public void RemoveDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount -= 1;
         foreach(var entry in stats.WordsTF) {
             if (_wordByDocumentTF.ContainsKey(entry.Key) && _wordDocumentCounts[entry.Key] > 1)
@@ -85,7 +72,7 @@ internal class Index : DatabaseComponent {
                 _wordDocumentCounts.Remove(entry.Key);
             }
             if (_wordByDocumentTF.ContainsKey(entry.Key))
-                _wordByDocumentTF[entry.Key].Remove(stats.DocumentName);
+                _wordByDocumentTF[entry.Key].Remove(documentName);
         }
     }
 
@@ -165,12 +152,7 @@ internal class Index : DatabaseComponent {
         string jsonIndex = JsonSerializer.Serialize(this, options);
         Path.Write(jsonIndex);
     }
-
-    public static class Factory {
-        public static Index Create(ComponentName collectionName, ComponentPath collectionPath) {
-            ComponentName name = collectionName.Concat("_index");
-            ComponentPath path = collectionPath + new ComponentName("index").WithExtension(".json");
-            return new Index(name, path);
-        }
+    public static Index Create(ComponentName name, ComponentPath path) {
+        return new Index(name, path);
     }
 }

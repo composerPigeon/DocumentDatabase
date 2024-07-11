@@ -2,12 +2,11 @@ namespace DatabaseNS;
 
 using DatabaseNS.CommandParserNS;
 using DatabaseNS.Components;
+using DatabaseNS.Components.Builders;
 
 public class ShellDatabaseDriver : DatabaseDriver{
 
     private Database? _database;
-
-    public ShellDatabaseDriver(string directoryPath) : base(directoryPath) { }
 
     public override Result Execute(string stringCommand) {
         try {
@@ -23,7 +22,7 @@ public class ShellDatabaseDriver : DatabaseDriver{
             switch (command.Type) {
                 case CommandType.CreateColletion:
                     if (command.CollectionName.HasValue)
-                        return _database.CreateColletion(command.CollectionName.Value);
+                        return _database.CreateCollection(command.CollectionName.Value);
                     else
                         throw new InvalidOperationException(ErrorMessages.COMMAND_INVALID);
                 case CommandType.DropCollection:
@@ -76,7 +75,14 @@ public class ShellDatabaseDriver : DatabaseDriver{
             }
         } else {
             if (command.Type == CommandType.Start) {
-                _database = Database.Factory.Create(new ComponentPath(Path));
+                var builder = new DatabaseBuilder();
+
+                if (command.Content != null && command.Content.Length == 1)
+                    builder.Path = new ComponentPath(command.Content[0]);
+                else
+                    builder.Path = new ComponentPath("Data");
+
+                _database = Database.BuildFrom(builder);
                 return new Result("Database started.");
             } else if (command.Type == CommandType.Exit) {
                 return new Result("Database exited.", Environment.Exit);

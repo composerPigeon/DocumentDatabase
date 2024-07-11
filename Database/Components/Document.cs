@@ -2,43 +2,38 @@ namespace DatabaseNS.Components;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DatabaseNS.Components.Builders;
 using DatabaseNS.DocumentParserNS;
 
-internal class Document : DatabaseComponent {
-
-    [JsonInclude]
-    private ComponentPath _contentPath;
-
+internal class Document : DatabaseComponent, IComponentBuildable<Document, DocumentBuilder> {
     public DocumentStats Stats { get; }
-
-    [JsonConstructor]
-    private Document(ComponentName Name, ComponentPath Path, ComponentPath _contentPath, DocumentStats Stats) : base(Name, Path) {
-        this.Stats = Stats;
-        this._contentPath = _contentPath;
+    private Document(ComponentName Name, ComponentPath Path, DocumentStats stats) : base(Name, Path) {
+        Stats = stats;
     }
 
     public Result GetContent() {
-        using (var reader = _contentPath.GetReader()) {
+        using (var reader = Path.GetReader()) {
             return new Result(reader.ReadToEnd());
         }
     }
 
     public void Save(JsonSerializerOptions options) {
-        string document = JsonSerializer.Serialize(this, options);
-        Path.Write(document);
+        Stats.Save(options);
     }
 
     public void Remove() {
-        _contentPath.Remove();
         Path.Remove();
+        Stats.Remove();
     }
-    public static class Factory {
-        public static Document Create(ComponentName name, ComponentPath collectionPath, string content) {
-            ComponentPath path = collectionPath + name.WithExtension(".json");
-            ComponentPath contentPath = collectionPath + name.WithExtension(".txt");
-            contentPath.Write(content);
-            DocumentStats stats = DocumentParser.Parse(contentPath, name);
-            return new Document(name, path, contentPath, stats);
-        }
-    }   
+
+    public static Document BuildFrom(DocumentBuilder builder) {
+        if (builder.Stats != null && builder.Name.HasValue && builder.Path.HasValue) {
+            return new Document(
+                builder.Name.Value,
+                builder.Path.Value,
+                builder.Stats
+            );
+        } else
+            throw new DatabaseCreateException(ErrorMessages.DOCUMENT_CREATE);
+    }  
 }

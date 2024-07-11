@@ -2,11 +2,11 @@ namespace DatabaseNS.DocumentParserNS;
 
 using DatabaseNS.Components;
 
-internal class DocumentStatsBuilder {
+internal class WordCounter {
     private Dictionary<string, ulong> _wordCounts;
     private ulong _maxCount;
 
-    public DocumentStatsBuilder() {
+    public WordCounter() {
         _wordCounts = new Dictionary<string, ulong>();
         _maxCount = 0;
     }
@@ -25,15 +25,14 @@ internal class DocumentStatsBuilder {
             _maxCount = count;
     }
 
-    public DocumentStats Build(ComponentName documentName) {
-        var wordsTF = new Dictionary<string, double>();
+    public Dictionary<string, double> Calculate() {
+        var counts = new Dictionary<string, double>();
 
-        foreach(var entry in _wordCounts) {
-            wordsTF.Add(entry.Key, (double)entry.Value / _maxCount);
+        foreach(string word in _wordCounts.Keys) {
+            double score = (double)_wordCounts[word] / _maxCount;
+            counts.Add(word, score);
         }
-        return new DocumentStats(
-            documentName,
-            wordsTF
-        );
+
+        return counts;
     }
 }

@@ -1,4 +1,4 @@
-namespace DatabaseNS.Components;
+namespace DatabaseNS;
 
 using System;
 using System.Text.Json;
@@ -13,6 +13,23 @@ internal struct ComponentPath {
         _value = value;
     }
 
+    public bool EndsWith(string value) {
+        return _value.EndsWith(value);
+    }
+
+    public ComponentName GetComponentName() {
+        if (Directory.Exists(_value))
+            return new DirectoryInfo(_value).Name.ToName();
+        if (File.Exists(_value))
+            return new FileInfo(_value).Name.ToName();
+        else
+            return ComponentName.Empty;
+    }
+
+    public TextReader GetReader() {
+        return new StreamReader(_value);
+    }
+
     public IEnumerable<ComponentPath> List() {
         if (Directory.Exists(_value))
             foreach (var path in Directory.EnumerateFileSystemEntries(_value)) {
@@ -20,10 +37,6 @@ internal struct ComponentPath {
             }
         else
             throw new DirectoryNotFoundException();
-    }
-
-    public bool EndsWith(string value) {
-        return _value.EndsWith(value);
     }
 
     public void Write(string content) {
@@ -42,10 +55,6 @@ internal struct ComponentPath {
         } catch (DirectoryNotFoundException) {}
     }
 
-    public TextReader GetReader() {
-        return new StreamReader(_value);
-    }
-
     public T? LoadAsJson<T>(JsonSerializerOptions options) {
         string content = File.ReadAllText(_value);
         return JsonSerializer.Deserialize<T>(content, options);
@@ -53,13 +62,6 @@ internal struct ComponentPath {
 
     public override string ToString() {
         return _value;
-    }
-
-    public ComponentName GetDirectoryName() {
-        if (Directory.Exists(_value))
-            return new DirectoryInfo(_value).Name.ToName();
-        else
-            return "".ToName();
     }
 
     public static ComponentPath operator +(ComponentPath left, ComponentPath right) {
@@ -75,9 +77,9 @@ internal struct ComponentPath {
     }
 }
 
-internal static class StringComponentNameExtensions {
-    public static ComponentName ToName(this string value) {
-        return new ComponentName(value);
+internal static class StringToComponentPathExtensions {
+    public static ComponentPath AsPath(this string value) {
+        return new ComponentPath(value);
     }
 }
 

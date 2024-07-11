@@ -17,6 +17,13 @@ internal static class ErrorMessages {
     public static readonly string QUERY_INVALID = "Invalid query.";
 
     public static readonly string INDEX_LOAD = "Index for some collection couldn't be loaded.";
-    public static readonly string DOCUMENT_LOAD = "Document from some of the collections couldn't be loaded.";
-    public static readonly string STOPWORDS_LOAD = "Stop words couldn't be loaded.";
+    public static readonly string STATS_LOAD = "Document statistics from some of the collections couldn't be loaded.";
+
+    public static readonly string DATABASE_CREATE = "Database couldn't be created.";
+    public static readonly string DOCUMENT_CREATE = "Document from some of the collections couldn't be created.";
+    public static readonly string STATS_CREATE = "Document statistics couldn't be created.";
+    public static readonly string INDEX_CREATE = "Index for some collection couldn't be created.";
+    public static readonly string COLLECTION_CREATE = "Some of the collections couldn't be created.";
+
+
 }

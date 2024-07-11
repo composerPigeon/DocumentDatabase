@@ -1,4 +1,4 @@
-namespace DatabaseNS.Components;
+namespace DatabaseNS;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -42,6 +42,14 @@ internal struct ComponentName : IComparable<ComponentName>, IEquatable<Component
 
     public ComponentName Concat(string content) {
         return new ComponentName(_value + content);
+    }
+
+    public static ComponentName Empty = "".ToName();
+}
+
+internal static class StringToComponentNameExtensions {
+    public static ComponentName ToName(this string value) {
+        return new ComponentName(value);
     }
 }
 

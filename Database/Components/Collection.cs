@@ -3,8 +3,10 @@ namespace DatabaseNS.Components;
 using System.Text;
 using System.Text.Json;
 using DatabaseNS;
+using DatabaseNS.Components.Builders;
+using DatabaseNS.Components.IndexNS;
 
-internal class Collection : DatabaseComponent{
+internal class Collection : DatabaseComponent, IComponentCreatable<Collection>, IComponentBuildable<Collection, CollectionBuilder> {
     private Dictionary<ComponentName, Document> _documents;
     private Index _index;
 
@@ -28,9 +30,10 @@ internal class Collection : DatabaseComponent{
         if (_documents.ContainsKey(documentName))
             throw new InvalidOperationException(ErrorMessages.DOCUMENT_EXIST);
 
-        Document document = Document.Factory.Create(documentName, Path, content);
+        Document document = DatabaseLoader.AddNewDocument(documentName, Path, content);
+        document.Path.Write(content);
         _documents.Add(documentName, document);
-        _index.AddDocument(document.Stats);
+        _index.AddDocument(documentName, document.Stats);
         return new Result("Document was added.");
     }
 
@@ -38,7 +41,7 @@ internal class Collection : DatabaseComponent{
         if (_documents.ContainsKey(documentName)) {
             Document document = _documents[documentName];
             _documents.Remove(documentName);
-            _index.RemoveDocument(document.Stats);
+            _index.RemoveDocument(documentName, document.Stats);
             document.Remove();
             return new Result("Document was deleted.");
         }
@@ -55,9 +58,6 @@ internal class Collection : DatabaseComponent{
         };
         options.Converters.Add(new NameToStringAsPropertyConverter());
         _index.Save(options);
-        foreach (var document in _documents.Values) {
-            document.Save(options);
-        }
     }
 
     public Result Find(string[] keyWords) {
@@ -72,17 +72,33 @@ internal class Collection : DatabaseComponent{
         return new Result(buffer.ToString());
     }
 
-    public static class Factory {
-
-        public static Collection Create(ComponentName name, ComponentPath path) {
-            var documents = new Dictionary<ComponentName, Document>();
-            var index = Index.Factory.Create(name, path);
+    public static Collection Create(ComponentName name, ComponentPath path) {
+        ComponentPath indexPath = path + DatabaseLoader.INDEX_DIRECTORY + "index.json".AsPath();
+        if (!Directory.Exists(path.ToString()))
             Directory.CreateDirectory(path.ToString());
-            return new Collection(name, path, documents, index);
-        } 
+        if (!Directory.Exists(indexPath.ToString()))
+            Directory.CreateDirectory(indexPath.ToString());
+        return new Collection(
+            name,
+            path,
+            new Dictionary<ComponentName, Document>(),
+            Index.Create(name.Concat("_index"), indexPath)
+        );
+    }
 
-        public static Collection Create(ComponentName name, ComponentPath path, Dictionary<ComponentName, Document> documents, Index index) {
-            return new Collection(name, path, documents, index);
-        }
+    public static Collection BuildFrom(CollectionBuilder builder) {
+        if (builder.Name.HasValue && builder.Path.HasValue) {
+            if (builder.Index != null && builder.Documents != null) {
+                return new Collection(
+                    builder.Name.Value,
+                    builder.Path.Value,
+                    builder.Documents,
+                    builder.Index
+                );
+            } else {
+                return Create(builder.Name.Value, builder.Path.Value);
+            }
+        } else 
+            throw new DatabaseCreateException(ErrorMessages.COLLECTION_CREATE);
     }
 }
