@@ -1,12 +1,7 @@
-﻿namespace DatabaseNS.CommandParserNS;
+﻿namespace DatabaseNS.CommandParserNS.States;
 
 using DatabaseNS.Tokenization;
-using DatabaseNS;
-
-public class CommandParseException : Exception {
-    public CommandParseException(string message) : base(message) { }
-    public CommandParseException(string message, Exception innerException) : base(message, innerException) { }
-}
+using DatabaseNS.ResultNS.Handlers;
 
 internal static class CommandParser {
 
@@ -21,8 +16,8 @@ internal static class CommandParser {
         }
 
         if (state is FinalState finalState)
-            return finalState.GetCommand();
+            return finalState.GetCommand(command);
         else
-            throw new CommandParseException(ErrorMessages.COMMANDPARSE_LONG);
+            throw Handlers.Error.ThrowCommandInvalid(command);
     }
 }

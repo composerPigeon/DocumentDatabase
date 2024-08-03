@@ -1,6 +1,6 @@
 namespace DatabaseNS.CommandParserNS;
 
-using DatabaseNS.Components;
+using DatabaseNS.FileSystem;
 
 internal enum CommandType {
     CreateColletion, // CREATE collectionName;
@@ -9,6 +9,7 @@ internal enum CommandType {
     AddDocument, // ADD fileName AS documentName TO collectionName;
     RemoveDocument, // REMOVE documentName FROM collectionName
     Find,
+    Load,
     Start,
     Exit,
     SetTreshhold,
