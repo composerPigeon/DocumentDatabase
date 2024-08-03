@@ -57,7 +57,7 @@ internal class ContentState : State {
             case CommandType.SetTreshhold:
                 return nextStateWithOneContent(token, "for", NextStateType.Collection);
             default:
-                throw Handlers.Error.ThrowCommandInvalid();
+                throw Handlers.Error.ThrowCommandParseInvalidState();
         }
     }
 

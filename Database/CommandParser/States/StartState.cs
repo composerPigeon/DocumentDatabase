@@ -1,7 +1,6 @@
 namespace DatabaseNS.CommandParserNS.States;
 
 using DatabaseNS.Tokenization;
-using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.ResultNS.Handlers;
 
 internal class StartState : State {
