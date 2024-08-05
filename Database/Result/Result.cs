@@ -5,9 +5,9 @@ using DatabaseNS.ResultNS.Handlers;
 
 public struct Result {
     public Message Message { get; init; }
-    public ValueType Type { get; init;}
+    public ResultType Type { get; init;}
 
-    private Result(Message message, ValueType type) {
+    private Result(Message message, ResultType type) {
         Message = message;
         Type = type;
     }
@@ -18,34 +18,31 @@ public struct Result {
 
     internal static CorrectHandler GetResultHandler() {
         return new CorrectHandler(
-            new InitValueDelegate((message, type) => new Result(message, type))
+            (message, type) => new Result(message, type)
         );
     }
 
     internal static ErrorHandler GetErrorHandler() {
         return new ErrorHandler(
-            new InitValueDelegate((message, type) => new Result(message, type))
+            (message, type) => new Result(message, type)
         );
     }
 }
 
-public enum ValueType {
+public enum ResultType {
     Ok,
     BadRequest,
-    NotFound,
     InternalServerError
 }
 
 public static class DatabaseResultTypeEtensions {
-    public static string GetString(this ValueType type) {
+    public static string GetString(this ResultType type) {
         switch (type) {
-            case ValueType.Ok:
+            case ResultType.Ok:
                 return "Ok";
-            case ValueType.BadRequest:
+            case ResultType.BadRequest:
                 return "BadRequest";
-            case ValueType.NotFound:
-                return "NotFound";
-            case ValueType.InternalServerError:
+            case ResultType.InternalServerError:
                 return "InternalServerError";
             default:
                 return "";

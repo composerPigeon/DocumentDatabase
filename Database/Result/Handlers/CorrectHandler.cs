@@ -4,28 +4,30 @@ using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS.Messages;
 
 internal class CorrectHandler : ResultHandler {
-    public CorrectHandler(InitValueDelegate createValue) : base(createValue) {}
+    public CorrectHandler(Func<Message, ResultType, Result> createValue) : base(createValue) {}
 
     public Result HandleDocumentAdded(ComponentName documentName) {
-        return InitValue(CorrectMessages.DocumentAdded(documentName), ValueType.Ok);
+        return InitResult(CorrectMessages.DocumentAdded(documentName), ResultType.Ok);
     }
 
     public Result HandleDocumentRemoved(ComponentName documentName) {
-        return InitValue(CorrectMessages.DocumentRemoved(documentName), ValueType.Ok);
+        return InitResult(CorrectMessages.DocumentRemoved(documentName), ResultType.Ok);
     }
 
     public Result HandleDocumentReturned(ComponentName documentName, string content) {
-        return InitValue(CorrectMessages.DocumentReturned(documentName, content), ValueType.Ok);
+        return InitResult(CorrectMessages.DocumentReturned(documentName, content), ResultType.Ok);
     }
 
     public Result HandleCollectionCreated(ComponentName collectionName) {
-        return InitValue(CorrectMessages.CollectionCreated(collectionName), ValueType.Ok);
+        return InitResult(CorrectMessages.CollectionCreated(collectionName), ResultType.Ok);
     }
     public Result HandleCollectionDropped(ComponentName collectionName) {
-        return InitValue(CorrectMessages.CollectionDropped(collectionName), ValueType.Ok);
+        return InitResult(CorrectMessages.CollectionDropped(collectionName), ResultType.Ok);
     }
-
     public Result HandleQueryResult(ComponentName collectionName, string query) {
-        return InitValue(CorrectMessages.QueryResult(collectionName, query), ValueType.Ok);
+        return InitResult(CorrectMessages.QueryResult(collectionName, query), ResultType.Ok);
+    }
+    public Result HandleTreshholdSet(double newValue) {
+        return InitResult(CorrectMessages.TreshholdSet(newValue), ResultType.Ok);
     }
 }

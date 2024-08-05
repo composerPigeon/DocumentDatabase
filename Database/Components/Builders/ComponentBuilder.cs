@@ -1,6 +1,9 @@
 namespace DatabaseNS.Components.Builders;
 
-internal abstract class DatabaseComponentBuilder {
+using DatabaseNS.FileSystem;
+
+internal abstract class DatabaseComponentBuilder<TComponent> {
     public ComponentName? Name { get; set; }
     public ComponentPath? Path { get; set; }
+    public abstract TComponent Build();
 }

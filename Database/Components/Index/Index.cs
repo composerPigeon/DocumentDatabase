@@ -2,10 +2,12 @@ namespace DatabaseNS.Components.IndexNS;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using DatabaseNS;
 using DatabaseNS.Components.Builders;
+using DatabaseNS.FileSystem;
+using DatabaseNS.ResultNS;
+using DatabaseNS.ResultNS.Handlers;
 
-internal class Index : DatabaseComponent, IComponentCreatable<Index> {
+internal class Index : DatabaseComponent {
 
     [JsonInclude]
     private ulong _documentCount;
@@ -42,11 +44,12 @@ internal class Index : DatabaseComponent, IComponentCreatable<Index> {
     }
 
     public Result SetTreshhold(double treshhold) {
-        if (treshhold <= 1 && treshhold >= 0)
+        if (treshhold <= 1 && treshhold >= 0) {
             _queryTreshhold = treshhold;
-        else
-            throw new InvalidOperationException("Treshold value must be in range from 0 to 1.");
-        return new Result("Treshhold was successfully set.");
+            return Handlers.Result.HandleTreshholdSet(treshhold);
+        } else
+            return Handlers.Error.HandleInvalidTreshholdInterval(treshhold);
+        
     }
 
     public void AddDocument(ComponentName documentName, DocumentStats stats) {
@@ -88,7 +91,7 @@ internal class Index : DatabaseComponent, IComponentCreatable<Index> {
             }
             return result / (Math.Sqrt(normQuery) * Math.Sqrt(normDocument));
         }
-        throw new InvalidOperationException(ErrorMessages.QUERY_INVALID);
+        throw Handlers.Error.ThrowQueryInvalid(query.Length, document.Length);
     }
 
     private Dictionary<string, double> getQueryStats(string[] keyWords) {
@@ -150,7 +153,11 @@ internal class Index : DatabaseComponent, IComponentCreatable<Index> {
 
     public void Save(JsonSerializerOptions options) {
         string jsonIndex = JsonSerializer.Serialize(this, options);
-        Path.Write(jsonIndex);
+        Path.AsExecutable().Write(jsonIndex);
+    }
+
+    public static IndexBuilder CreateBuilder() {
+        return new IndexBuilder((name, path) => new Index(name, path));
     }
     public static Index Create(ComponentName name, ComponentPath path) {
         return new Index(name, path);

@@ -51,9 +51,9 @@ internal static class ErrorMessages {
             string.Format("Invalid command '{0}' was inputted.", command)
         );
     }
-    public static Message NameInvalid(ComponentName name) {
+    public static Message ComponentNameInvalid(string componentName, ComponentName name) {
         return new Message(
-            string.Format("Invalid name {0} was inputted.", name)
+            string.Format("Name '{0}' is invalid for {1}", name, componentName)
         );
     }
     public static Message TreshholdInvalidFormatValue(string value) {
@@ -61,9 +61,14 @@ internal static class ErrorMessages {
             string.Format("Inputted value '{0}' of treshhold has invalid format.", value)
         );
     }
-    public static Message QueryInvalid(string query) {
+    public static Message TreshholdInvalidInterval(double value) {
         return new Message(
-            string.Format("Invalid query '{0}' was inputted.", query)
+            string.Format("Value '{0}' must be in range from 0 to 1.", value)
+        );
+    }
+    public static Message QueryInvalid(int queryLen, int documentLen) {
+        return new Message(
+            string.Format("Query with length '{0}' and document with length '{1}' does not match.", queryLen, documentLen)
         );
     }
 
@@ -83,14 +88,14 @@ internal static class ErrorMessages {
     public static Message DatabaseCreate() {
         return new Message("Database couldn't be created.");
     }
-    public static Message DocumentCreate(ComponentName collectionName, ComponentName documentName) {
+    public static Message DocumentCreate(ComponentName documentName) {
         return new Message(
-            string.Format("Document '{0}' from the collection '{1}' couldn't be created.", documentName, collectionName)
+            string.Format("Document '{0}' couldn't be created.", documentName)
         );
     }
-    public static Message StatsCreate(ComponentName collectionName, ComponentName documentName) {
+    public static Message StatsCreate(ComponentName documentName) {
         return new Message(
-            string.Format("Document statistics '{0}' from the collection '{1}' couldn't be created.", documentName, collectionName)
+            string.Format("Document statistics '{0}' couldn't be created.", documentName)
         );
     }
     public static Message IndexCreate(ComponentName indexName) {

@@ -1,12 +1,12 @@
-using System.ComponentModel;
+namespace DatabaseNS.Components;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
+using DatabaseNS.FileSystem;
 using DatabaseNS.DocumentParserNS;
 
-namespace DatabaseNS.Components;
-
-internal class DocumentStats : DatabaseComponent, IComponentBuildable<DocumentStats, DocumentStatsBuilder> {
+internal class DocumentStats : DatabaseComponent {
 
     // Word and TermFreq
     public Dictionary<string, double> WordsTF { get;}
@@ -18,31 +18,23 @@ internal class DocumentStats : DatabaseComponent, IComponentBuildable<DocumentSt
 
     public void Save(JsonSerializerOptions options) {
         string content = JsonSerializer.Serialize(this, options);
-        Path.Write(content);
+        Path.AsExecutable().Write(content);
     }
 
     public void Remove() {
-        Path.Remove();
+        Path.AsExecutable().Remove();
     }
 
     public static DocumentStats ReadDocument(ComponentName name, ComponentPath path, string content) {
         WordCounter counter = DocumentParser.Parse(content);
-        DocumentStatsBuilder builder = new DocumentStatsBuilder {
-            WordsTF = counter.Calculate(),
-            Path = path,
-            Name = name
-        };
-        return BuildFrom(builder);
+        DocumentStatsBuilder builder = DocumentStats.CreateBuilder();
+        builder.WordsTF = counter.Calculate();
+        builder.Path = path;
+        builder.Name = name;
+        return builder.Build();
     }
 
-    public static DocumentStats BuildFrom(DocumentStatsBuilder builder) {
-        if (builder.WordsTF != null && builder.Name.HasValue && builder.Path.HasValue) {
-            return new DocumentStats(
-                builder.Name.Value,
-                builder.Path.Value,
-                builder.WordsTF
-            );
-        } else
-            throw new DatabaseCreateException(ErrorMessages.STATS_CREATE);
+    public static DocumentStatsBuilder CreateBuilder() {
+        return new DocumentStatsBuilder((name, path, wordsTF) => new DocumentStats(name, path, wordsTF));
     }
 }

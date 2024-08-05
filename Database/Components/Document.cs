@@ -1,20 +1,20 @@
 namespace DatabaseNS.Components;
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
-using DatabaseNS.DocumentParserNS;
+using DatabaseNS.FileSystem;
+using DatabaseNS.ResultNS;
+using DatabaseNS.ResultNS.Handlers;
 
-internal class Document : DatabaseComponent, IComponentBuildable<Document, DocumentBuilder> {
+internal class Document : DatabaseComponent {
     public DocumentStats Stats { get; }
     private Document(ComponentName Name, ComponentPath Path, DocumentStats stats) : base(Name, Path) {
         Stats = stats;
     }
 
     public Result GetContent() {
-        using (var reader = Path.GetReader()) {
-            return new Result(reader.ReadToEnd());
-        }
+        string content = Path.AsExecutable().Read();
+        return Handlers.Result.HandleDocumentReturned(Name, content);
     }
 
     public void Save(JsonSerializerOptions options) {
@@ -22,18 +22,11 @@ internal class Document : DatabaseComponent, IComponentBuildable<Document, Docum
     }
 
     public void Remove() {
-        Path.Remove();
+        Path.AsExecutable().Remove();
         Stats.Remove();
     }
 
-    public static Document BuildFrom(DocumentBuilder builder) {
-        if (builder.Stats != null && builder.Name.HasValue && builder.Path.HasValue) {
-            return new Document(
-                builder.Name.Value,
-                builder.Path.Value,
-                builder.Stats
-            );
-        } else
-            throw new DatabaseCreateException(ErrorMessages.DOCUMENT_CREATE);
-    }  
+    public static DocumentBuilder CreateBuilder() {
+        return new DocumentBuilder((name, path, stats) => new Document(name, path, stats));
+    }
 }

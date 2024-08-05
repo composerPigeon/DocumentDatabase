@@ -2,12 +2,10 @@ namespace DatabaseNS.ResultNS.Handlers;
 
 using DatabaseNS.ResultNS.Messages;
 
-internal delegate Result InitValueDelegate(Message message, ValueType type);
-
 internal abstract class ResultHandler {
-    protected InitValueDelegate InitValue;
-    protected ResultHandler(InitValueDelegate initValue) {
-        InitValue = initValue;
+    protected Func<Message, ResultType, Result> InitResult;
+    protected ResultHandler(Func<Message, ResultType, Result> initResult) {
+        InitResult = initResult;
     }
 }
 

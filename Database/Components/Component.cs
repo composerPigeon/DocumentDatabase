@@ -1,10 +1,7 @@
 namespace DatabaseNS.Components;
 
 using DatabaseNS.Components.Builders;
-
-public class DatabaseCreateException : Exception {
-    public DatabaseCreateException(string message) : base(message) {}
-}
+using DatabaseNS.FileSystem;
 
 internal abstract class DatabaseComponent {
     public ComponentName Name { get; }
@@ -15,13 +12,10 @@ internal abstract class DatabaseComponent {
     }
 }
 
-internal interface IComponentBuildable<TComponent, TBuilder>
-    where TComponent : DatabaseComponent
-    where TBuilder : DatabaseComponentBuilder
-{
-    public static abstract TComponent BuildFrom(TBuilder builder);
-}
-
-internal interface IComponentCreatable<TComponent> where TComponent : DatabaseComponent {
-    public static abstract TComponent Create(ComponentName name, ComponentPath path);
+internal enum ComponentType {
+    Database,
+    Collection,
+    Index,
+    Document,
+    DocumentStats
 }

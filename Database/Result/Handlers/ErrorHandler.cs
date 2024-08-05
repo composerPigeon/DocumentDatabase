@@ -4,109 +4,114 @@ using DatabaseNS.FileSystem;
 using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Messages;
 using DatabaseNS.ResultNS.Exceptions;
+using DatabaseNS.Components;
 
 internal class ErrorHandler : ResultHandler {
-    public ErrorHandler(InitValueDelegate createValue) : base(createValue) {}
+    public ErrorHandler(Func<Message, ResultType, Result> createValue) : base(createValue) {}
 
     public Result HandleDocumentMissing(ComponentName name) {
-        return InitValue(ErrorMessages.DocumentMissing(name), ValueType.BadRequest);
-    }
-    public Result HandleDocumentNotFound(ComponentName name) {
-        return InitValue(ErrorMessages.DocumentMissing(name), ValueType.NotFound);
+        return InitResult(ErrorMessages.DocumentMissing(name), ResultType.BadRequest);
     }
     public Result HandleDocumentExists(ComponentName documentName) {
-        return InitValue(ErrorMessages.DocumentExists(documentName), ValueType.BadRequest);
+        return InitResult(ErrorMessages.DocumentExists(documentName), ResultType.BadRequest);
     }
     public Result HandleCollectionMissing(ComponentName collectionName) {
-        return InitValue(ErrorMessages.CollectionMissing(collectionName), ValueType.BadRequest);
+        return InitResult(ErrorMessages.CollectionMissing(collectionName), ResultType.BadRequest);
     }
     public Result HandleCollectionExists(ComponentName collectionName) {
-        return InitValue(ErrorMessages.CollectionExists(collectionName), ValueType.BadRequest);
+        return InitResult(ErrorMessages.CollectionExists(collectionName), ResultType.BadRequest);
     }
     public Result HandleComponentNameMissing() {
-        return InitValue(ErrorMessages.ComponentNameMissing(), ValueType.BadRequest);
+        return InitResult(ErrorMessages.ComponentNameMissing(), ResultType.BadRequest);
     }
 
     //Command parse errors
 
     public Result HandleCommandParseShort() {
-        return InitValue(ErrorMessages.CommandParseShort(), ValueType.BadRequest);
+        return InitResult(ErrorMessages.CommandParseShort(), ResultType.BadRequest);
     }
-    public ValueException ThrowCommandParseShort() {
+    public ResultException ThrowCommandParseShort() {
         return new CommandParseException(HandleCommandParseShort());
     }
     public Result HandleCommandParseLong() {
-        return InitValue(ErrorMessages.CommandParseLong(), ValueType.BadRequest);
+        return InitResult(ErrorMessages.CommandParseLong(), ResultType.BadRequest);
     }
     public Result HandleCommandParseInvalidToken(Token token) {
-        return InitValue(ErrorMessages.CommandParseInvalidToken(token), ValueType.BadRequest);
+        return InitResult(ErrorMessages.CommandParseInvalidToken(token), ResultType.BadRequest);
     }
-    public ValueException ThrowCommandParseInvalidToken(Token token) {
-        return new ValueException(HandleCommandParseInvalidToken(token));
+    public ResultException ThrowCommandParseInvalidToken(Token token) {
+        return new CommandParseException(HandleCommandParseInvalidToken(token));
     }
 
     public Result HandleCommandInvalid(string command) {
-        return InitValue(ErrorMessages.CommandInvalid(command), ValueType.BadRequest);
+        return InitResult(ErrorMessages.CommandInvalid(command), ResultType.BadRequest);
     }
-    public ValueException ThrowCommandInvalid(string command) {
+    public ResultException ThrowCommandInvalid(string command) {
         return new CommandParseException(HandleCommandInvalid(command));
     }
-    public ValueException ThrowCommandParseInvalidState() {
+    public ResultException ThrowCommandParseInvalidState() {
         return new CommandParseException(
-            InitValue(ErrorMessages.CommandParseInvalidState(), ValueType.InternalServerError)
+            InitResult(ErrorMessages.CommandParseInvalidState(), ResultType.InternalServerError)
         );
     }
 
-    //INvalid values
-    public Result HandleInvalidName(ComponentName name) {
-        return InitValue(ErrorMessages.NameInvalid(name), ValueType.BadRequest);
+    //Invalid values
+    public Result HandleComponentNameInvalid(ComponentType type, ComponentName? name) {
+        var strType = "";
+        switch (type) {
+            case ComponentType.Database: strType = "database"; break;
+            case ComponentType.Collection: strType = "collection"; break;
+            case ComponentType.Index: strType = "index"; break;
+            case ComponentType.Document: strType = "document"; break;
+            case ComponentType.DocumentStats: strType = "document statistics"; break;
+        }
+        return InitResult(ErrorMessages.ComponentNameInvalid(strType, name.HasValue ? name.Value : ComponentName.Empty), ResultType.BadRequest);
     }
     public Result HandleInvalidTreshholdValueFormat(string value) {
-        return InitValue(ErrorMessages.TreshholdInvalidFormatValue(value), ValueType.BadRequest);
+        return InitResult(ErrorMessages.TreshholdInvalidFormatValue(value), ResultType.BadRequest);
     }
-    public Result HandleInvalidQuery(string query) {
-        return InitValue(ErrorMessages.QueryInvalid(query), ValueType.BadRequest);
+    public Result HandleInvalidTreshholdInterval(double value) {
+        return InitResult(ErrorMessages.TreshholdInvalidInterval(value), ResultType.BadRequest);
     }
-
-    //Load errors
-    public static Message IndexLoad(ComponentName collectionName) {
-        return new Message(
-            string.Format("Index for collection '{0}' couldn't be loaded.", collectionName)
-        );
-    }
-    public static Message StatsLoad(ComponentName collectionName, ComponentName documentName) {
-        return new Message(
-            string.Format("Document statistics '{0}' from the collection '{1}' couldn't be loaded.", documentName, collectionName)
+    public ResultException ThrowQueryInvalid(int queryLen, int documenLen) {
+        return new ResultException(
+            InitResult(ErrorMessages.QueryInvalid(queryLen, documenLen), ResultType.InternalServerError)
         );
     }
 
     // Build errors
-    public ValueException ThrowDatabaseCreate() {
-        return new DatabaseCreateException(
-            InitValue(ErrorMessages.DatabaseCreate(), ValueType.InternalServerError)
+    public ResultException ThrowComponentNameInvalid(ComponentType type, ComponentName? name) {
+        return new DatabaseException(
+            HandleComponentNameInvalid(type, name)
         );
     }
 
-    public ValueException ThrowDocumentCreate(ComponentName collectionName, ComponentName documentName) {
+    public ResultException ThrowDatabaseCreate() {
         return new DatabaseCreateException(
-            InitValue(ErrorMessages.DocumentCreate(collectionName, documentName), ValueType.InternalServerError)
+            InitResult(ErrorMessages.DatabaseCreate(), ResultType.InternalServerError)
         );
     }
 
-    public ValueException ThrowDocumentStatsCreate(ComponentName collectionName, ComponentName documentName) {
+    public ResultException ThrowDocumentCreate(ComponentName documentName) {
         return new DatabaseCreateException(
-            InitValue(ErrorMessages.StatsCreate(collectionName, documentName), ValueType.InternalServerError)
+            InitResult(ErrorMessages.DocumentCreate(documentName), ResultType.InternalServerError)
         );
     }
 
-    public ValueException ThrowIndexCreate(ComponentName collectionName) {
+    public ResultException ThrowDocumentStatsCreate(ComponentName documentName) {
         return new DatabaseCreateException(
-            InitValue(ErrorMessages.IndexCreate(collectionName), ValueType.InternalServerError)
+            InitResult(ErrorMessages.StatsCreate(documentName), ResultType.InternalServerError)
         );
     }
-    public ValueException ThrowCollectionCreate(ComponentName collectionName) {
-        return new ValueException(
-            InitValue(ErrorMessages.CollectionCreate(collectionName), ValueType.InternalServerError)
+
+    public ResultException ThrowIndexCreate(ComponentName indexName) {
+        return new DatabaseCreateException(
+            InitResult(ErrorMessages.IndexCreate(indexName), ResultType.InternalServerError)
+        );
+    }
+    public ResultException ThrowCollectionCreate(ComponentName collectionName) {
+        return new DatabaseCreateException(
+            InitResult(ErrorMessages.CollectionCreate(collectionName), ResultType.InternalServerError)
         );
     }
 }

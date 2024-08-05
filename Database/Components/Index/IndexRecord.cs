@@ -1,5 +1,7 @@
 namespace DatabaseNS.Components.IndexNS;
 
+using DatabaseNS.FileSystem;
+
 internal struct IndexRecord : IComparable<IndexRecord> {
     public ComponentName DocumentName {get;}
     public double Score {get;}

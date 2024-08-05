@@ -33,6 +33,11 @@ public class CorrectMessages {
             string.Format("Result for collection '{0}': \n{1}", collectionName, result)
         );
     }
+    internal static Message TreshholdSet(double newValue) {
+        return new Message(
+            string.Format("Treshhold was set to '{0}'", newValue)
+        );
+    }
 
     public static Message FromString(string message) {
         return new Message(message);

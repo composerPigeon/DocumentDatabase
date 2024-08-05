@@ -2,11 +2,13 @@ namespace DatabaseNS.Components;
 
 using System.Text;
 using System.Text.Json;
-using DatabaseNS;
 using DatabaseNS.Components.Builders;
+using DatabaseNS.FileSystem;
 using DatabaseNS.Components.IndexNS;
+using DatabaseNS.ResultNS.Handlers;
+using DatabaseNS.ResultNS;
 
-internal class Collection : DatabaseComponent, IComponentCreatable<Collection>, IComponentBuildable<Collection, CollectionBuilder> {
+internal class Collection : DatabaseComponent {
     private Dictionary<ComponentName, Document> _documents;
     private Index _index;
 
@@ -23,18 +25,33 @@ internal class Collection : DatabaseComponent, IComponentCreatable<Collection>, 
         if (_documents.ContainsKey(documentName)) {
             return _documents[documentName].GetContent();
         }
-        throw new InvalidOperationException(ErrorMessages.DOCUMENT_MISSING);
+        return Handlers.Error.HandleDocumentMissing(documentName);
+    }
+
+    private Document createDocument(ComponentName documentName, string content) {
+        DocumentStats stats = DocumentStats.ReadDocument(
+            documentName.AppendString("_stats"),
+            EntryCreator.GetIndexDirectoryFor(Path)
+                .AppendPath(documentName.WithExtension(".json")),
+            content
+        );
+
+        DocumentBuilder builder = Document.CreateBuilder();
+        builder.Name = documentName;
+        builder.Path = Path.AppendPath(documentName.WithExtension(".txt"));
+        builder.Stats = stats;
+        return builder.Build();
     }
 
     public Result AddDocument(ComponentName documentName, string content) {
         if (_documents.ContainsKey(documentName))
-            throw new InvalidOperationException(ErrorMessages.DOCUMENT_EXIST);
+            return Handlers.Error.HandleDocumentExists(documentName);
 
-        Document document = DatabaseLoader.AddNewDocument(documentName, Path, content);
-        document.Path.Write(content);
+        Document document = createDocument(documentName, content);
+        EntryCreator.CreateDocumentFile(document.Path, content);
         _documents.Add(documentName, document);
         _index.AddDocument(documentName, document.Stats);
-        return new Result("Document was added.");
+        return Handlers.Result.HandleDocumentAdded(documentName);
     }
 
     public Result RemoveDocument(ComponentName documentName) {
@@ -43,13 +60,13 @@ internal class Collection : DatabaseComponent, IComponentCreatable<Collection>, 
             _documents.Remove(documentName);
             _index.RemoveDocument(documentName, document.Stats);
             document.Remove();
-            return new Result("Document was deleted.");
+            return Handlers.Result.HandleDocumentRemoved(documentName);
         }
-        throw new InvalidOperationException(ErrorMessages.DOCUMENT_MISSING);
+        return Handlers.Error.HandleDocumentMissing(documentName);
     }
 
     public void Remove() {
-        Path.Remove();
+        Path.AsExecutable().Remove();
     }
 
     public void Save() {
@@ -69,36 +86,10 @@ internal class Collection : DatabaseComponent, IComponentCreatable<Collection>, 
             buffer.Append('\n');
         }
 
-        return new Result(buffer.ToString());
+        return Handlers.Result.HandleQueryResult(Name, buffer.ToString());
     }
 
-    public static Collection Create(ComponentName name, ComponentPath path) {
-        ComponentPath indexPath = path + DatabaseLoader.INDEX_DIRECTORY + "index.json".AsPath();
-        if (!Directory.Exists(path.ToString()))
-            Directory.CreateDirectory(path.ToString());
-        if (!Directory.Exists(indexPath.ToString()))
-            Directory.CreateDirectory(indexPath.ToString());
-        return new Collection(
-            name,
-            path,
-            new Dictionary<ComponentName, Document>(),
-            Index.Create(name.Concat("_index"), indexPath)
-        );
-    }
-
-    public static Collection BuildFrom(CollectionBuilder builder) {
-        if (builder.Name.HasValue && builder.Path.HasValue) {
-            if (builder.Index != null && builder.Documents != null) {
-                return new Collection(
-                    builder.Name.Value,
-                    builder.Path.Value,
-                    builder.Documents,
-                    builder.Index
-                );
-            } else {
-                return Create(builder.Name.Value, builder.Path.Value);
-            }
-        } else 
-            throw new DatabaseCreateException(ErrorMessages.COLLECTION_CREATE);
+    public static CollectionBuilder CreateBuilder() {
+        return new CollectionBuilder((name, path, documents, index) => new Collection(name, path, documents, index));
     }
 }
