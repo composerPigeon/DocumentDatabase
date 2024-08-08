@@ -2,6 +2,7 @@
 
 using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Handlers;
+using DatabaseNS.CommandParserNS.Commands;
 
 internal static class CommandParser {
 
@@ -10,10 +11,10 @@ internal static class CommandParser {
         State state = new StartState();
 
         Token token = reader.Read();
-        while (!token.IsLast) {
+        do {
             state = state.NextState(token);
             token = reader.Read();
-        }
+        } while (!token.IsLast);
 
         if (state is FinalState finalState)
             return finalState.GetCommand(command);

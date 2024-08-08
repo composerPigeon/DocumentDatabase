@@ -2,48 +2,43 @@ namespace DatabaseNS.CommandParserNS.States;
 
 using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Handlers;
+using DatabaseNS.CommandParserNS.Commands;
 
 internal class StartState : State {
-    public StartState() : base(new List<string>()) {}
+    public StartState() : base() {}
     public override State NextState(Token token) {
         if (token.IsLast) {
-            throw Handlers.Error.ThrowCommandParseShort();
+            throw Handlers.Error.ThrowCommandParserCommandEmpty();
         }
 
         switch (token.Word) {
-            case "start":
-                Type = CommandType.Start;
-                return new FinalState(this);
-            case "exit":
-                Type = CommandType.Exit;
-                return new FinalState(this);
-            case "shutdown":
-                Type = CommandType.ShutDown;
-                return new FinalState(this);
             case "get":
-                Type = CommandType.GetDocument;
-                return new DocumentState(this);
+                builder.Type = CommandType.Find;
+                return new DocumentState(this, Token.From);
             case "create":
-                Type = CommandType.CreateColletion;
-                return new CollectionState(this);
-            case "drop":
-                Type = CommandType.DropCollection;
+                builder.Type = CommandType.Create;
                 return new CollectionState(this);
             case "add":
-                Type = CommandType.AddDocument;
-                return new ContentState(this);
+                builder.Type = CommandType.Create;
+                return new AddState(this);
             case "remove":
-                Type = CommandType.RemoveDocument;
-                return new DocumentState(this);
+                builder.Type = CommandType.Delete;
+                return new RemoveState(this);
             case "find":
-                Type = CommandType.Find;
-                return new ContentState(this);
+                builder.Type = CommandType.Find;
+                return new FindState(this);
             case "load":
-                Type = CommandType.Load;
-                return new ContentState(this);
+                builder.Type = CommandType.Load;
+                return new OneContentToCollectionState(this, Token.As);
             case "treshhold":
-                Type = CommandType.SetTreshhold;
-                return new ContentState(this);
+                builder.Type = CommandType.Treshhold;
+                return new OneContentToCollectionState(this, Token.In);
+            case "list":
+                builder.Type = CommandType.List;
+                return new ListState(this);
+            case "save":
+                builder.Type = CommandType.Save;
+                return new EmptyState(this);
             default:
                 throw Handlers.Error.ThrowCommandParseInvalidToken(token);
         }

@@ -1,24 +1,16 @@
 namespace DatabaseNS.CommandParserNS.States;
 
-using DatabaseNS.FileSystem;
 using DatabaseNS.Tokenization;
+using DatabaseNS.CommandParserNS.Commands;
 
 internal abstract class State {
-    public ComponentName? CollectionName {get; protected set;}
-    public CommandType? Type {get; protected set;}
-
-    public ComponentName? DocumentName {get; protected set;}
-    public List<string> Content {get; init;}
-
-    protected State(List<string> content) {
-        Content = content;
+    protected CommandBuilder builder;
+    protected State() {
+        builder = new CommandBuilder();
     }
 
     protected State(State state) {
-        CollectionName = state.CollectionName;
-        Type = state.Type;
-        DocumentName = state.DocumentName;
-        Content = state.Content;
+        builder = state.builder;
     }
 
     public abstract State NextState(Token token);

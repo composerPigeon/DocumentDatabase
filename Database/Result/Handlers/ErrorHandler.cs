@@ -27,20 +27,15 @@ internal class ErrorHandler : ResultHandler {
 
     //Command parse errors
 
-    public Result HandleCommandParseShort() {
-        return InitResult(ErrorMessages.CommandParseShort(), ResultType.BadRequest);
-    }
-    public ResultException ThrowCommandParseShort() {
-        return new CommandParseException(HandleCommandParseShort());
-    }
-    public Result HandleCommandParseLong() {
-        return InitResult(ErrorMessages.CommandParseLong(), ResultType.BadRequest);
-    }
-    public Result HandleCommandParseInvalidToken(Token token) {
-        return InitResult(ErrorMessages.CommandParseInvalidToken(token), ResultType.BadRequest);
+    public ResultException ThrowCommandParserCommandEmpty() {
+        return new CommandParseException(
+            InitResult(ErrorMessages.CommandParseCommandEmpty(), ResultType.BadRequest)
+        );
     }
     public ResultException ThrowCommandParseInvalidToken(Token token) {
-        return new CommandParseException(HandleCommandParseInvalidToken(token));
+        return new CommandParseException(
+            InitResult(ErrorMessages.CommandParseInvalidToken(token), ResultType.BadRequest)
+        );
     }
 
     public Result HandleCommandInvalid(string command) {

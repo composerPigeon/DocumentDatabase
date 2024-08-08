@@ -30,16 +30,13 @@ internal static class ErrorMessages {
     }
 
     //Command parse errors
-    public static Message CommandParseShort() {
-        return new Message("Unexpected end of command.");
+    public static Message CommandParseCommandEmpty() {
+        return new Message("Command is empty.");
     }
     public static Message CommandParseInvalidToken(Token token) {
         return new Message(
             string.Format("Unexpected token '{0}' occured during command parsing process.", token)
         );
-    }
-    public static Message CommandParseLong() {
-        return new Message("Command is too long.");
     }
     public static Message CommandParseInvalidState() {
         return new Message("Command parsing process appeared in unexpected state.");

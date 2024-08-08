@@ -2,6 +2,7 @@ namespace DatabaseNS.CommandParserNS.States;
 
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.Tokenization;
+using DatabaseNS.CommandParserNS.Commands;
 
 internal class FinalState : State {
 
@@ -12,14 +13,6 @@ internal class FinalState : State {
     }
 
     public Command GetCommand(string command) {
-        if (!Type.HasValue) {
-            throw Handlers.Error.ThrowCommandInvalid(command);
-        }
-        return new Command() {
-            CollectionName = CollectionName,
-            Type = Type.Value,
-            DocumentName = DocumentName,
-            Content = Content.ToArray()
-        };
+        return builder.Build(command);
     }
 }
