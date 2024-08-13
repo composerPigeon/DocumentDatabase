@@ -3,6 +3,7 @@ namespace DatabaseNS.Components.IndexNS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
+using DatabaseNS.Components.Values;
 using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.Handlers;
@@ -52,7 +53,7 @@ internal class Index : DatabaseComponent {
         
     }
 
-    public void AddDocument(ComponentName documentName, DocumentStats stats) {
+    private void addDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount += 1;
         foreach(var entry in stats.WordsTF) {
             if (_wordByDocumentTF.ContainsKey(entry.Key))
@@ -66,7 +67,12 @@ internal class Index : DatabaseComponent {
         }
     }
 
-    public void RemoveDocument(ComponentName documentName, DocumentStats stats) {
+    public void AddDocument(ComponentName documentName, DocumentStats stats) {
+        addDocument(documentName, stats);
+        FileSystemAccessHandler.SaveIndex(this);
+    }
+
+    private void removeDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount -= 1;
         foreach(var entry in stats.WordsTF) {
             if (_wordByDocumentTF.ContainsKey(entry.Key) && _wordDocumentCounts[entry.Key] > 1)
@@ -77,6 +83,11 @@ internal class Index : DatabaseComponent {
             if (_wordByDocumentTF.ContainsKey(entry.Key))
                 _wordByDocumentTF[entry.Key].Remove(documentName);
         }
+    }
+
+    public void RemoveDocument(ComponentName documentName, DocumentStats stats) {
+        removeDocument(documentName, stats);
+        FileSystemAccessHandler.SaveIndex(this);
     }
 
     private double calculateCosineSimilarity(double[] query, double[] document, double[] idfs) {
@@ -91,7 +102,7 @@ internal class Index : DatabaseComponent {
             }
             return result / (Math.Sqrt(normQuery) * Math.Sqrt(normDocument));
         }
-        throw Handlers.Error.ThrowQueryInvalid(query.Length, document.Length);
+        throw Handlers.Exception.ThrowQueryInvalid(query.Length, document.Length);
     }
 
     private Dictionary<string, double> getQueryStats(string[] keyWords) {
@@ -149,11 +160,6 @@ internal class Index : DatabaseComponent {
         }
         result.Sort();
         return result;
-    }
-
-    public void Save(JsonSerializerOptions options) {
-        string jsonIndex = JsonSerializer.Serialize(this, options);
-        Path.AsExecutable().Write(jsonIndex);
     }
 
     public static IndexBuilder CreateBuilder() {

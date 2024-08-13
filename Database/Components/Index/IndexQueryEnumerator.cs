@@ -1,7 +1,7 @@
 namespace DatabaseNS.Components.IndexNS;
 
 using System.Collections;
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 
 internal class IndexQueryEnumerator : IEnumerator<IndexQueryRecord> {
 

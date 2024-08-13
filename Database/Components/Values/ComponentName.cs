@@ -1,4 +1,4 @@
-namespace DatabaseNS;
+namespace DatabaseNS.Components.Values;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -40,15 +40,23 @@ internal struct ComponentName : IComparable<ComponentName>, IEquatable<Component
         return new ComponentPath(_value + extension);
     }
 
-    public ComponentName Concat(string content) {
+    public ComponentName AppendString(string content) {
         return new ComponentName(_value + content);
+    }
+
+    public bool IsSafe() {
+        if (!_value.Contains("/"))
+            return true;
+        return false;
     }
 
     public static ComponentName Empty = "".ToName();
 }
 
 internal static class StringToComponentNameExtensions {
-    public static ComponentName ToName(this string value) {
+    public static ComponentName ToName(this string? value) {
+        if (value == null)
+            return ComponentName.Empty;
         return new ComponentName(value);
     }
 }

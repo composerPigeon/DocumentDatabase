@@ -1,4 +1,4 @@
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 
 namespace DatabaseNS.Components.Builders;
@@ -15,8 +15,8 @@ internal class DocumentStatsBuilder : DatabaseComponentBuilder<DocumentStats> {
             if (Path.HasValue && WordsTF != null) {
                 return _init(Name.Value, Path.Value, WordsTF);
             }
-            throw Handlers.Error.ThrowDocumentStatsCreate(Name.Value);
+            throw Handlers.Exception.ThrowDocumentStatsCreate(Name.Value);
         }
-        throw Handlers.Error.ThrowComponentNameInvalid(ComponentType.DocumentStats, Name);
+        throw Handlers.Exception.ThrowComponentNameInvalid(ComponentType.DocumentStats, Name);
     }
 }

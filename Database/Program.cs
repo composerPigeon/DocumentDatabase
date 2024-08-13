@@ -1,21 +1,25 @@
 ﻿namespace DatabaseNS;
 
-using DatabaseNS.Components;
+using DatabaseNS.FileSystem;
+using DatabaseNS.ResultNS;
+using DatabaseNS.Drivers;
 
 class Program
 {
     static void Main(string[] args)
     {
-        DatabaseDriver database = new ShellDatabaseDriver();
+        DatabaseDriver database = DatabaseDriver.Instance;
+
+        Console.WriteLine(EntryCreator.DataPath);
 
         while (true) {
             string? input = Console.ReadLine();
 
             if (input != null) {
-                Result result = database.Execute(input);
-                Console.WriteLine(result);
-                if (result.Action != null)
-                    result.Action(0);
+                var result = database.Execute(input);
+                Console.Write(result.Type.GetString());
+                Console.WriteLine(": ");
+                Console.WriteLine(result.Message);
             }
         }
     }

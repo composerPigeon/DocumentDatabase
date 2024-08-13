@@ -8,7 +8,7 @@ internal class StartState : State {
     public StartState() : base() {}
     public override State NextState(Token token) {
         if (token.IsLast) {
-            throw Handlers.Error.ThrowCommandParserCommandEmpty();
+            throw Handlers.Exception.ThrowCommandParseCommandEmpty();
         }
 
         switch (token.Word) {
@@ -36,11 +36,8 @@ internal class StartState : State {
             case "list":
                 builder.Type = CommandType.List;
                 return new ListState(this);
-            case "save":
-                builder.Type = CommandType.Save;
-                return new EmptyState(this);
             default:
-                throw Handlers.Error.ThrowCommandParseInvalidToken(token);
+                throw Handlers.Exception.ThrowCommandParseInvalidToken(token);
         }
     }
 }

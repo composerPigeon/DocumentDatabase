@@ -1,7 +1,7 @@
 namespace DatabaseNS.Components.Builders;
 
 using DatabaseNS.Components.IndexNS;
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 
 internal class IndexBuilder : DatabaseComponentBuilder<Index> {
@@ -14,8 +14,8 @@ internal class IndexBuilder : DatabaseComponentBuilder<Index> {
             if (Path.HasValue) {
                 return _init(Name.Value, Path.Value);
             }
-            throw Handlers.Error.ThrowIndexCreate(Name.Value);
+            throw Handlers.Exception.ThrowIndexCreate(Name.Value);
         }
-        throw Handlers.Error.ThrowComponentNameInvalid(ComponentType.Index, Name);
+        throw Handlers.Exception.ThrowComponentNameInvalid(ComponentType.Index, Name);
     }
 }

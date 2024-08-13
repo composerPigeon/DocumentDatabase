@@ -1,6 +1,7 @@
 namespace DatabaseNS.Components;
 
 using DatabaseNS.Components.Builders;
+using DatabaseNS.Components.Values;
 using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.Handlers;
@@ -10,12 +11,6 @@ internal class Database : DatabaseComponent {
 
     private Database(Dictionary<ComponentName, Collection> collections, ComponentPath path) : base(new ComponentName("Database"), path) {
         _collections = collections;
-    }
-
-    public void ShutDown() {
-        foreach (var collection in _collections.Values) {
-            collection.Save();
-        }
     }
 
     public Result CreateCollection(ComponentName collectionName) {
@@ -29,11 +24,11 @@ internal class Database : DatabaseComponent {
         return Handlers.Error.HandleCollectionExists(collectionName);
     }
 
-    public Result DropCollection(ComponentName collectionName) {
+    public Result RemoveCollection(ComponentName collectionName) {
         if (_collections.ContainsKey(collectionName)) {
             Collection collection = _collections[collectionName];
+            FileSystemAccessHandler.RemoveCollection(collection);
             _collections.Remove(collectionName);
-            collection.Remove();
             return Handlers.Result.HandleCollectionDropped(collectionName);
         }
         return Handlers.Error.HandleCollectionMissing(collectionName);
@@ -44,6 +39,13 @@ internal class Database : DatabaseComponent {
             return _collections[collectionName].SetTreshhold(treshhold);
         else
             return Handlers.Error.HandleCollectionMissing(collectionName);
+    }
+
+    public Result Find(ComponentName collectionName, string[] keyWords) {
+        if (_collections.ContainsKey(collectionName)) {
+            return _collections[collectionName].Find(keyWords);
+        }
+        return Handlers.Error.HandleCollectionMissing(collectionName);
     }
 
     public Result GetDocument(ComponentName collectionName, ComponentName documentName) {
@@ -63,13 +65,6 @@ internal class Database : DatabaseComponent {
     public Result AddDocument(ComponentName collectionName, ComponentName documentName, string content) {
         if (_collections.ContainsKey(collectionName)) {
             return _collections[collectionName].AddDocument(documentName, content);
-        }
-        return Handlers.Error.HandleCollectionMissing(collectionName);
-    }
-
-    public Result Find(ComponentName collectionName, string[] keyWords) {
-        if (_collections.ContainsKey(collectionName)) {
-            return _collections[collectionName].Find(keyWords);
         }
         return Handlers.Error.HandleCollectionMissing(collectionName);
     }

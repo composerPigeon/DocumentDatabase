@@ -1,6 +1,6 @@
 namespace DatabaseNS.ResultNS.Messages;
 
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.Tokenization;
 
 internal static class ErrorMessages {
@@ -29,7 +29,7 @@ internal static class ErrorMessages {
         return new Message("Component name is missing.");
     }
 
-    //Command parse errors
+    // ====== Command parse errors ======
     public static Message CommandParseCommandEmpty() {
         return new Message("Command is empty.");
     }
@@ -42,7 +42,7 @@ internal static class ErrorMessages {
         return new Message("Command parsing process appeared in unexpected state.");
     }
 
-    //Invalid values
+    // ====== Invalid values ======
     public static Message CommandInvalid(string command) {
         return new Message(
             string.Format("Invalid command '{0}' was inputted.", command)
@@ -69,7 +69,7 @@ internal static class ErrorMessages {
         );
     }
 
-    //Load errors
+    // ====== Load errors ======
     public static Message IndexLoad(ComponentName collectionName) {
         return new Message(
             string.Format("Index for collection '{0}' couldn't be loaded.", collectionName)
@@ -81,7 +81,50 @@ internal static class ErrorMessages {
         );
     }
 
-    //Build errors
+    // ====== File system access errors ======
+    public static Message CollectionDirectoryCreate(ComponentName collectionName) {
+        return new Message(
+            string.Format("Directory for collection '{0}' couldn't be created.", collectionName)
+        );
+    }
+
+    public static Message CollectionDirectoryRemove(ComponentName collectionName) {
+        return new Message(
+            string.Format("Directory for collection '{0}' couldn't be removed.", collectionName)
+        );
+    }
+
+    public static Message DocumentFileCreate(ComponentName documentName) {
+        return new Message(
+            string.Format("File for document '{0}' couldn't be created.", documentName)
+        );
+    }
+
+    public static Message DocumentFileRemove(ComponentName documentName) {
+        return new Message(
+            string.Format("File for document '{0}' couldn't be removed.", documentName)
+        );
+    }
+
+    public static Message DocumentFileRead(ComponentName documentName) {
+        return new Message(
+            string.Format("File for document '{0}' couldn't be read.", documentName)
+        );
+    }
+
+    public static Message ComponentAsJsonSave(ComponentPath path) {
+        return new Message(
+            string.Format("Component '{0}' couldn't be saved into json file.", path)
+        );
+    }
+
+    public static Message ComponentFromJsonLoad(ComponentPath path) {
+        return new Message(
+            string.Format("Component '{0}' couldn't be loaded from json file.", path)
+        );
+    }
+
+    // ====== Component build errors ======
     public static Message DatabaseCreate() {
         return new Message("Database couldn't be created.");
     }

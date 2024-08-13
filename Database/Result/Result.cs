@@ -27,6 +27,13 @@ public struct Result {
             (message, type) => new Result(message, type)
         );
     }
+
+    internal static ExceptionHandler GetExceptionHandler(ErrorHandler errorHandler) {
+        return new ExceptionHandler(
+            (message, type) => new Result(message, type),
+            errorHandler
+        );
+    }
 }
 
 public enum ResultType {

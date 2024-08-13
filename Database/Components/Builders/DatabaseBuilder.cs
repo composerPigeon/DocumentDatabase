@@ -1,6 +1,6 @@
 namespace DatabaseNS.Components.Builders;
 
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 
 internal class DatabaseBuilder : DatabaseComponentBuilder<Database> {
@@ -14,14 +14,11 @@ internal class DatabaseBuilder : DatabaseComponentBuilder<Database> {
 
     public override Database Build() {
         if (Path.HasValue) {
-            if (!Directory.Exists(Path.Value))
-                Directory.CreateDirectory(Path.Value);
-
             if (Collections != null)
                 return _init(Collections, Path.Value);
             else
                 return _init(new Dictionary<ComponentName, Collection>(), Path.Value);
         } else
-            throw Handlers.Error.ThrowDatabaseCreate();  
+            throw Handlers.Exception.ThrowDatabaseCreate();  
     }
 }

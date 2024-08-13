@@ -1,12 +1,13 @@
 namespace DatabaseNS.Components;
 
 using System.Text;
-using System.Text.Json;
+
 using DatabaseNS.Components.Builders;
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.Components.IndexNS;
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.ResultNS;
+using DatabaseNS.FileSystem;
 
 internal class Collection : DatabaseComponent {
     private Dictionary<ComponentName, Document> _documents;
@@ -31,7 +32,7 @@ internal class Collection : DatabaseComponent {
     private Document createDocument(ComponentName documentName, string content) {
         DocumentStats stats = DocumentStats.ReadDocument(
             documentName.AppendString("_stats"),
-            EntryCreator.GetIndexDirectoryFor(Path)
+            FileSystemAccessHandler.GetIndexDirectoryPath(Path)
                 .AppendPath(documentName.WithExtension(".json")),
             content
         );
@@ -48,7 +49,7 @@ internal class Collection : DatabaseComponent {
             return Handlers.Error.HandleDocumentExists(documentName);
 
         Document document = createDocument(documentName, content);
-        EntryCreator.CreateDocumentFile(document.Path, content);
+        FileSystemAccessHandler.AddDocument(document, content);
         _documents.Add(documentName, document);
         _index.AddDocument(documentName, document.Stats);
         return Handlers.Result.HandleDocumentAdded(documentName);
@@ -59,22 +60,10 @@ internal class Collection : DatabaseComponent {
             Document document = _documents[documentName];
             _documents.Remove(documentName);
             _index.RemoveDocument(documentName, document.Stats);
-            document.Remove();
+            FileSystemAccessHandler.RemoveDocument(document);
             return Handlers.Result.HandleDocumentRemoved(documentName);
         }
         return Handlers.Error.HandleDocumentMissing(documentName);
-    }
-
-    public void Remove() {
-        Path.AsExecutable().Remove();
-    }
-
-    public void Save() {
-        var options = new JsonSerializerOptions {
-            WriteIndented = true,
-        };
-        options.Converters.Add(new NameToStringAsPropertyConverter());
-        _index.Save(options);
     }
 
     public Result Find(string[] keyWords) {

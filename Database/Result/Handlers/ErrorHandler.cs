@@ -1,6 +1,6 @@
 namespace DatabaseNS.ResultNS.Handlers;
 
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Messages;
 using DatabaseNS.ResultNS.Exceptions;
@@ -8,6 +8,8 @@ using DatabaseNS.Components;
 
 internal class ErrorHandler : ResultHandler {
     public ErrorHandler(Func<Message, ResultType, Result> createValue) : base(createValue) {}
+
+    // ====== Component errors ======
 
     public Result HandleDocumentMissing(ComponentName name) {
         return InitResult(ErrorMessages.DocumentMissing(name), ResultType.BadRequest);
@@ -25,41 +27,15 @@ internal class ErrorHandler : ResultHandler {
         return InitResult(ErrorMessages.ComponentNameMissing(), ResultType.BadRequest);
     }
 
-    //Command parse errors
-
-    public ResultException ThrowCommandParserCommandEmpty() {
-        return new CommandParseException(
-            InitResult(ErrorMessages.CommandParseCommandEmpty(), ResultType.BadRequest)
-        );
-    }
-    public ResultException ThrowCommandParseInvalidToken(Token token) {
-        return new CommandParseException(
-            InitResult(ErrorMessages.CommandParseInvalidToken(token), ResultType.BadRequest)
-        );
-    }
+    // ====== Command parse errors ======
 
     public Result HandleCommandInvalid(string command) {
         return InitResult(ErrorMessages.CommandInvalid(command), ResultType.BadRequest);
     }
-    public ResultException ThrowCommandInvalid(string command) {
-        return new CommandParseException(HandleCommandInvalid(command));
-    }
-    public ResultException ThrowCommandParseInvalidState() {
-        return new CommandParseException(
-            InitResult(ErrorMessages.CommandParseInvalidState(), ResultType.InternalServerError)
-        );
-    }
 
-    //Invalid values
+    // ====== Invalid values ======
     public Result HandleComponentNameInvalid(ComponentType type, ComponentName? name) {
-        var strType = "";
-        switch (type) {
-            case ComponentType.Database: strType = "database"; break;
-            case ComponentType.Collection: strType = "collection"; break;
-            case ComponentType.Index: strType = "index"; break;
-            case ComponentType.Document: strType = "document"; break;
-            case ComponentType.DocumentStats: strType = "document statistics"; break;
-        }
+        var strType = parseComponentTypeToString(type);
         return InitResult(ErrorMessages.ComponentNameInvalid(strType, name.HasValue ? name.Value : ComponentName.Empty), ResultType.BadRequest);
     }
     public Result HandleInvalidTreshholdValueFormat(string value) {
@@ -68,45 +44,5 @@ internal class ErrorHandler : ResultHandler {
     public Result HandleInvalidTreshholdInterval(double value) {
         return InitResult(ErrorMessages.TreshholdInvalidInterval(value), ResultType.BadRequest);
     }
-    public ResultException ThrowQueryInvalid(int queryLen, int documenLen) {
-        return new ResultException(
-            InitResult(ErrorMessages.QueryInvalid(queryLen, documenLen), ResultType.InternalServerError)
-        );
-    }
-
-    // Build errors
-    public ResultException ThrowComponentNameInvalid(ComponentType type, ComponentName? name) {
-        return new DatabaseException(
-            HandleComponentNameInvalid(type, name)
-        );
-    }
-
-    public ResultException ThrowDatabaseCreate() {
-        return new DatabaseCreateException(
-            InitResult(ErrorMessages.DatabaseCreate(), ResultType.InternalServerError)
-        );
-    }
-
-    public ResultException ThrowDocumentCreate(ComponentName documentName) {
-        return new DatabaseCreateException(
-            InitResult(ErrorMessages.DocumentCreate(documentName), ResultType.InternalServerError)
-        );
-    }
-
-    public ResultException ThrowDocumentStatsCreate(ComponentName documentName) {
-        return new DatabaseCreateException(
-            InitResult(ErrorMessages.StatsCreate(documentName), ResultType.InternalServerError)
-        );
-    }
-
-    public ResultException ThrowIndexCreate(ComponentName indexName) {
-        return new DatabaseCreateException(
-            InitResult(ErrorMessages.IndexCreate(indexName), ResultType.InternalServerError)
-        );
-    }
-    public ResultException ThrowCollectionCreate(ComponentName collectionName) {
-        return new DatabaseCreateException(
-            InitResult(ErrorMessages.CollectionCreate(collectionName), ResultType.InternalServerError)
-        );
-    }
+    
 }

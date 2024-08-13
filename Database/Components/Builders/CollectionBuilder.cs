@@ -1,7 +1,7 @@
 namespace DatabaseNS.Components.Builders;
 
 using DatabaseNS.Components.IndexNS;
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 
 internal class CollectionBuilder : DatabaseComponentBuilder<Collection> {
@@ -16,9 +16,9 @@ internal class CollectionBuilder : DatabaseComponentBuilder<Collection> {
 
     private Index buildIndex(ComponentName collectionName, ComponentPath collectionPath) {
         var index = Index.CreateBuilder();
-        var indexPath = EntryCreator.CreateCollectionDirectories(collectionPath);
+        //var indexPath = EntryCreator.CreateCollectionDirectories(collectionPath);
         index.Name = collectionName.AppendString("_index");
-        index.Path = indexPath;
+        //index.Path = indexPath;
         return index.Build();
     }
 
@@ -40,6 +40,6 @@ internal class CollectionBuilder : DatabaseComponentBuilder<Collection> {
                 );
             }
         } else 
-            throw Handlers.Error.ThrowComponentNameInvalid(ComponentType.Collection, Name);
+            throw Handlers.Exception.ThrowComponentNameInvalid(ComponentType.Collection, Name);
     }
 }

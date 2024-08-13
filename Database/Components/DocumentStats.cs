@@ -3,7 +3,7 @@ namespace DatabaseNS.Components;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.DocumentParserNS;
 
 internal class DocumentStats : DatabaseComponent {
@@ -16,18 +16,9 @@ internal class DocumentStats : DatabaseComponent {
         WordsTF = wordsTF;
     }
 
-    public void Save(JsonSerializerOptions options) {
-        string content = JsonSerializer.Serialize(this, options);
-        Path.AsExecutable().Write(content);
-    }
-
-    public void Remove() {
-        Path.AsExecutable().Remove();
-    }
-
     public static DocumentStats ReadDocument(ComponentName name, ComponentPath path, string content) {
         WordCounter counter = DocumentParser.Parse(content);
-        DocumentStatsBuilder builder = DocumentStats.CreateBuilder();
+        DocumentStatsBuilder builder = CreateBuilder();
         builder.WordsTF = counter.Calculate();
         builder.Path = path;
         builder.Name = name;
