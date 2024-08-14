@@ -6,7 +6,10 @@ using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Messages;
 
 internal class CorrectHandler : ResultHandler {
-    public CorrectHandler(Func<Message, ResultType, Result> createValue) : base(createValue) {}
+    public CorrectHandler(
+        Func<Message, ResultType, Result> initResult,
+        Func<Message, ResultType, Exception, Result> initResultWithException
+    ) : base(initResult, initResultWithException) {}
 
     public Result HandleDocumentAdded(ComponentName documentName) {
         return InitResult(CorrectMessages.DocumentAdded(documentName), ResultType.Ok);

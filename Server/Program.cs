@@ -5,7 +5,7 @@ using DatabaseNS.ResultNS;
 
 public class Program
 {
-    private static DatabaseDriver _driver = DatabaseDriver.Instance;
+    private static DatabaseDriver _driver = DatabaseDriver.InitializeDriver(DriverType.Server);
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +31,6 @@ public class Program
             default:
                 return Results.StatusCode(500);
         }
- 
-        
     }
 
     /**

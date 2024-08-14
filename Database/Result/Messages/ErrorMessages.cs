@@ -151,4 +151,14 @@ internal static class ErrorMessages {
             string.Format("Collection '{0}' couldn't be created.", collectionName)
         );
     }
+
+    // ====== Command not supported for server
+    public static Message CommandNotSupported(string command) {
+        return new Message($"Command '{command}' is not supported to use via server.");
+    }
+
+    // ===== Unexpected exception
+    public static Message UnexpectedException() {
+        return new Message("Unexpected exception occured during the process.");
+    }
 }

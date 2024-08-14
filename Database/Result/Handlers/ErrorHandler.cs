@@ -1,13 +1,14 @@
 namespace DatabaseNS.ResultNS.Handlers;
 
 using DatabaseNS.Components.Values;
-using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Messages;
-using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.Components;
 
 internal class ErrorHandler : ResultHandler {
-    public ErrorHandler(Func<Message, ResultType, Result> createValue) : base(createValue) {}
+    public ErrorHandler(
+        Func<Message, ResultType, Result> initResult,
+        Func<Message, ResultType, Exception, Result> initResultWithException
+    ) : base(initResult, initResultWithException) {}
 
     // ====== Component errors ======
 
@@ -47,5 +48,14 @@ internal class ErrorHandler : ResultHandler {
     public Result HandleInvalidTreshholdInterval(double value) {
         return InitResult(ErrorMessages.TreshholdInvalidInterval(value), ResultType.BadRequest);
     }
-    
+
+    // ====== Command for server not supported ======
+    public Result HandleCommandNotSupported(string command) {
+        return InitResult(ErrorMessages.CommandNotSupported(command), ResultType.BadRequest);
+    }
+
+    // ====== Unexpected exception happened ======
+    public Result HandleUnexpectedException(Exception cause) {
+        return InitResultWithException(ErrorMessages.UnexpectedException(), ResultType.InternalServerError, cause);
+    }
 }

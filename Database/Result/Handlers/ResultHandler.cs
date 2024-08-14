@@ -5,8 +5,13 @@ using DatabaseNS.ResultNS.Messages;
 
 internal abstract class ResultHandler {
     protected Func<Message, ResultType, Result> InitResult;
-    protected ResultHandler(Func<Message, ResultType, Result> initResult) {
+    protected Func<Message, ResultType, Exception, Result> InitResultWithException;
+    protected ResultHandler(
+        Func<Message, ResultType, Result> initResult,
+        Func<Message, ResultType, Exception, Result> initResultWithException
+    ) {
         InitResult = initResult;
+        InitResultWithException = initResultWithException;
     }
 
     protected string parseComponentTypeToString(ComponentType type) {

@@ -5,12 +5,15 @@ using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.Components.Values;
 using DatabaseNS.Components;
 using DatabaseNS.Tokenization;
-using Microsoft.VisualBasic;
 
 internal class ExceptionHandler : ResultHandler {
 
     private ErrorHandler _error;
-    public ExceptionHandler(Func<Message, ResultType, Result> createValue, ErrorHandler errorHandler) : base(createValue) {
+    public ExceptionHandler(
+        Func<Message, ResultType, Result> initResult,
+        Func<Message, ResultType, Exception, Result> initResultWithException,
+        ErrorHandler errorHandler
+    ) : base(initResult, initResultWithException) {
         _error = errorHandler;
     }
 
@@ -89,49 +92,49 @@ internal class ExceptionHandler : ResultHandler {
 
     public ResultException ThrowDocumentFileRemove(ComponentName documentName, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.DocumentFileRemove(documentName), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.DocumentFileRemove(documentName), ResultType.InternalServerError, cause),
             cause
         );
     }
 
     public ResultException ThrowDocumentFileRead(ComponentName documentName, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.DocumentFileRead(documentName), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.DocumentFileRead(documentName), ResultType.InternalServerError, cause),
             cause
         );
     }
 
     public ResultException ThrowDocumentFileCreate(ComponentName documentName, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.DocumentFileCreate(documentName), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.DocumentFileCreate(documentName), ResultType.InternalServerError, cause),
             cause
         );
     }
 
     public ResultException ThrowCollectionDirectoryCreate(ComponentName collectionName, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.CollectionDirectoryCreate(collectionName), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.CollectionDirectoryCreate(collectionName), ResultType.InternalServerError, cause),
             cause
         );
     }
 
     public ResultException ThrowCollectionDirectoryRemove(ComponentName collectionName, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.CollectionDirectoryRemove(collectionName), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.CollectionDirectoryRemove(collectionName), ResultType.InternalServerError, cause),
             cause
         );
     }
 
     public ResultException ThrowComponentAsJsonSave(ComponentPath path, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.ComponentAsJsonSave(path), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.ComponentAsJsonSave(path), ResultType.InternalServerError, cause),
             cause
         );
     }
 
     public ResultException ThrowComponentFromJsonLoad(ComponentPath path, Exception cause) {
         return new DatabaseException(
-            InitResult(ErrorMessages.ComponentFromJsonLoad(path), ResultType.InternalServerError),
+            InitResultWithException(ErrorMessages.ComponentFromJsonLoad(path), ResultType.InternalServerError, cause),
             cause
         );
     }

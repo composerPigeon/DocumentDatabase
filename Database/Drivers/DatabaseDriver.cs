@@ -11,14 +11,11 @@ using DatabaseNS.ResultNS.Handlers;
 
 public class DatabaseDriver {
     internal Database Database { get; }
+    internal DriverType Type { get; }
 
-    private DatabaseDriver(Database database) {
+    private DatabaseDriver(Database database, DriverType type) {
         Database = database;
-    }
-
-    private static DatabaseDriver _instance = initDriver();
-    public static DatabaseDriver Instance {
-        get { return _instance; }
+        Type = type;
     }
 
     public Result Execute(string input) {
@@ -27,8 +24,8 @@ public class DatabaseDriver {
             return ProcessCommand(command);
         } catch (ResultException e)  {
             return e.Result;
-        } catch (Exception) {
-            return //TODO cover unexpected exceptions;
+        } catch (Exception e) {
+            return Handlers.Error.HandleUnexpectedException(e);
         }
     }
 
@@ -69,8 +66,12 @@ public class DatabaseDriver {
     private Result processLoadCmd(Command command) {
         if (command is ContentCollectionCommand contentCollectionCommand) {
             ComponentPath path = "".AsPath();
-            if (contentCollectionCommand.TryGetPath(0, out path))
-                Database.LoadDocuments(contentCollectionCommand.Collection, path);
+            if (contentCollectionCommand.TryGetPath(0, out path)) {
+                if (Type == DriverType.Server) {
+                    return Handlers.Error.HandleCommandNotSupported(command.Value);
+                }
+                return Database.LoadDocuments(contentCollectionCommand.Collection, path);
+            }
         }
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
@@ -111,8 +112,13 @@ public class DatabaseDriver {
         }
     }
 
-    private static DatabaseDriver initDriver() {
+    public static DatabaseDriver InitializeDriver(DriverType type) {
         var database = FileSystemAccessHandler.LoadDatabase();
-        return new DatabaseDriver(database);
+        return new DatabaseDriver(database, type);
     }
+}
+
+public enum DriverType {
+    Server,
+    Shell
 }
