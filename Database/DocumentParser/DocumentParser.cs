@@ -1,5 +1,7 @@
 namespace DatabaseNS.DocumentParserNS;
 
+using DatabaseNS.Components.Values;
+using DatabaseNS.FileSystem;
 using DatabaseNS.Tokenization;
 
 internal class DocumentParser {
@@ -7,19 +9,36 @@ internal class DocumentParser {
 
 
     public static WordCounter Parse(string content) {
-        TokenReader reader = new DocumentTokenReader(content);
-        
-        var counter = new WordCounter();
+        using (TokenReader reader = new DocumentTokenReader(content)) {
+            var counter = new WordCounter();
 
-        Token token = reader.Read();
-        while (!token.IsLast) {
-            if (token.Word != null)
-                if (!StopWords.Contains(token.Word))
-                    counter.AddWord(token.Word);
-                else
-                    counter.AddWord(token.Word);
-            token = reader.Read();
+            Token token = reader.Read();
+            while (!token.IsLast) {
+                if (token.Word != null)
+                    if (!StopWords.Contains(token.Word))
+                        counter.AddWord(token.Word);
+                    else
+                        counter.AddWord(token.Word);
+                token = reader.Read();
+            }
+            return counter;
         }
-        return counter;
+    }
+
+    public static WordCounter Parse(ComponentPath path) {
+        using (TokenReader reader = new DocumentTokenReader(FileSystemAccessHandler.OpenFile(path))) {
+            var counter = new WordCounter();
+
+            Token token = reader.Read();
+            while (!token.IsLast) {
+                if (token.Word != null)
+                    if (!StopWords.Contains(token.Word))
+                        counter.AddWord(token.Word);
+                    else
+                        counter.AddWord(token.Word);
+                token = reader.Read();
+            }
+            return counter;
+        }
     }
 }

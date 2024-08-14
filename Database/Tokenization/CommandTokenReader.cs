@@ -4,19 +4,16 @@ using System.Text;
 
 internal class CommandTokenReader : TokenReader {
 
-    private TextReader _reader;
-
     private ReaderState _state;
     private char _last;
     StringBuilder _buffer;
-    public CommandTokenReader(string command) {
-        _reader = new StringReader(command);
+    public CommandTokenReader(string command) : base(new StringReader(command)){
         _state = ReaderState.Out;
         _last = '\0';
         _buffer = new StringBuilder();
     }
 
-    public Token Read() {
+    public override Token Read() {
         int x = _reader.Read();
 
         while (x != -1) {

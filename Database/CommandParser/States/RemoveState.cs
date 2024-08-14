@@ -4,16 +4,13 @@ using DatabaseNS.Tokenization;
 
 internal class RemoveState : BufferState {
 
-    public RemoveState(State state) : base(state, BufferType.Any) {}
+    public RemoveState(State state) : base(state, BufferType.One) {}
     public override State NextState(Token token) {
-        if (token.IsLast && bufferCount == 1) {
+        if (token.IsLast) {
             builder.Collection = getNameFromBuffer();
             return new FinalState(this);
         } else if (token == Token.From) {
-            if (bufferCount == 1)
-                builder.Document = getNameFromBuffer();
-            else
-                builder.Content = getContentFromBuffer();
+            builder.Document = getNameFromBuffer();
             return new CollectionState(this);
         } else {
             addTokenToBuffer(token);

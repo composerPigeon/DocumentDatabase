@@ -5,21 +5,20 @@ using DatabaseNS.Components;
 
 internal class DocumentTokenReader : TokenReader {
 
-    private TextReader _reader;
-
     private ReaderState _state;
     StringBuilder _buffer;
 
     private List<char> _punctuation;
 
-    public DocumentTokenReader(string content) {
-        _reader = new StringReader(content);
+    public DocumentTokenReader(TextReader reader) : base(reader) {
         _state = ReaderState.Out;
         _buffer = new StringBuilder();
         _punctuation = new List<char>(){'.', ',', ':', '!', '?', ';'};
     }
 
-    public Token Read() {
+    public DocumentTokenReader(string content) : this(new StringReader(content)) {}
+
+    public override Token Read() {
         int x = _reader.Read();
 
         while (x != -1) {

@@ -29,7 +29,7 @@ internal class StartState : State {
                 return new FindState(this);
             case "load":
                 builder.Type = CommandType.Load;
-                return new OneContentToCollectionState(this, Token.As);
+                return new OneContentToCollectionState(this, Token.To);
             case "treshhold":
                 builder.Type = CommandType.Treshhold;
                 return new OneContentToCollectionState(this, Token.In);

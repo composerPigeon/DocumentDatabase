@@ -18,6 +18,15 @@ internal class ContentCollectionCommand : CollectionCommand, IContentCommand {
         }
         return false;
     }
+
+    public bool TryGetPath(int pos, out ComponentPath value) {
+        value = "".AsPath();
+        if (Content.Length > pos && pos >= 0) {
+            value = Content[pos].AsPath();
+            return true;
+        }
+        return false;
+    }
     
     public bool TryGetDouble(int pos, out double value) {
         value = 0;
