@@ -23,10 +23,10 @@ internal class DocumentBuilder : DatabaseComponentBuilder<Document> {
                     Stats
                 );
             } else {
-                throw Handlers.Error.ThrowDocumentCreate(Name.Value);
+                throw Handlers.Exception.ThrowDocumentCreate(Name.Value);
             }
         } else {
-            throw Handlers.Error.ThrowComponentNameInvalid(ComponentType.Document, Name);
+            throw Handlers.Exception.ThrowComponentNameInvalid(ComponentType.Document, Name);
         }
     }
 }

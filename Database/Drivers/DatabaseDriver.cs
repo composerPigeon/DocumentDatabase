@@ -52,9 +52,8 @@ public class DatabaseDriver {
             return Database.RemoveCollection(collectionCommand.Collection);
         } else if (command is DocumentCommand documentCommand) {
             return Database.RemoveDocument(documentCommand.Collection, documentCommand.Document);
-        } else if {
+        } else if (command is ContentCollectionCommand contentCollectionCommand)
             //Bulk remove
-        }
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
@@ -84,10 +83,10 @@ public class DatabaseDriver {
     }
 
     private Result processListCmd(Command command) {
-        if (command is CollectionCommand) {
-            //LIst documents in database
+        if (command is CollectionCommand collectionCommand) {
+            return Database.ListDocuments(collectionCommand.Collection);
         } else {
-            //List collections
+            return Database.ListCollections();
         }
     }
 

@@ -22,6 +22,14 @@ internal class Collection : DatabaseComponent {
         return _index.SetTreshhold(treshhold);
     }
 
+    public Result Find(string[] keyWords) {
+        return Handlers.Result.HandleQueryResult(Name, _index.Find(keyWords));
+    }
+
+    public Result ListDocuments() {
+        return Handlers.Result.HandleListDocuments(Name, _documents.Keys);
+    }
+
     public Result GetDocument(ComponentName documentName) {
         if (_documents.ContainsKey(documentName)) {
             return _documents[documentName].GetContent();
@@ -64,18 +72,6 @@ internal class Collection : DatabaseComponent {
             return Handlers.Result.HandleDocumentRemoved(documentName);
         }
         return Handlers.Error.HandleDocumentMissing(documentName);
-    }
-
-    public Result Find(string[] keyWords) {
-        StringBuilder buffer = new StringBuilder();
-        foreach (var record in _index.Find(keyWords)) {
-            buffer.Append(record.Score.ToString("F"));
-            buffer.Append("\t");
-            buffer.Append(record.DocumentName);
-            buffer.Append('\n');
-        }
-
-        return Handlers.Result.HandleQueryResult(Name, buffer.ToString());
     }
 
     public static CollectionBuilder CreateBuilder() {

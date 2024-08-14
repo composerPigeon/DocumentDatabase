@@ -13,12 +13,18 @@ internal class Database : DatabaseComponent {
         _collections = collections;
     }
 
+    public Result ListCollections() {
+        return Handlers.Result.HandleListCollections(_collections.Keys);
+    }
+
     public Result CreateCollection(ComponentName collectionName) {
         if (!_collections.ContainsKey(collectionName)) {
             var collectionBuilder = Collection.CreateBuilder();
             collectionBuilder.Name = collectionName;
             collectionBuilder.Path = Path.AppendName(collectionName);
-            _collections.Add(collectionName, collectionBuilder.Build());
+            var collection = collectionBuilder.Build();
+            FileSystemAccessHandler.AddCollection(collection);
+            _collections.Add(collectionName, collection);
             return Handlers.Result.HandleCollectionCreated(collectionName);
         }
         return Handlers.Error.HandleCollectionExists(collectionName);
@@ -44,6 +50,13 @@ internal class Database : DatabaseComponent {
     public Result Find(ComponentName collectionName, string[] keyWords) {
         if (_collections.ContainsKey(collectionName)) {
             return _collections[collectionName].Find(keyWords);
+        }
+        return Handlers.Error.HandleCollectionMissing(collectionName);
+    }
+
+    public Result ListDocuments(ComponentName collectionName) {
+        if (_collections.ContainsKey(collectionName)) {
+            return _collections[collectionName].ListDocuments();
         }
         return Handlers.Error.HandleCollectionMissing(collectionName);
     }

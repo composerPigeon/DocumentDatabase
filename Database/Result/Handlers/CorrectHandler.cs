@@ -1,5 +1,7 @@
 namespace DatabaseNS.ResultNS.Handlers;
 
+using System.Text;
+using DatabaseNS.Components.IndexNS;
 using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Messages;
 
@@ -24,10 +26,17 @@ internal class CorrectHandler : ResultHandler {
     public Result HandleCollectionDropped(ComponentName collectionName) {
         return InitResult(CorrectMessages.CollectionDropped(collectionName), ResultType.Ok);
     }
-    public Result HandleQueryResult(ComponentName collectionName, string query) {
-        return InitResult(CorrectMessages.QueryResult(collectionName, query), ResultType.Ok);
+    public Result HandleQueryResult(ComponentName collectionName, IEnumerable<IndexRecord> result) {
+        return InitResult(CorrectMessages.QueryResult(collectionName, result), ResultType.Ok);
     }
     public Result HandleTreshholdSet(double newValue) {
         return InitResult(CorrectMessages.TreshholdSet(newValue), ResultType.Ok);
+    }
+    public Result HandleListCollections(IEnumerable<ComponentName> collections) {
+        return InitResult(CorrectMessages.ListCollections(collections), ResultType.Ok);
+    }
+
+    public Result HandleListDocuments(ComponentName collection, IEnumerable<ComponentName> documents) {
+        return InitResult(CorrectMessages.ListDocuments(collection, documents), ResultType.Ok);
     }
 }
