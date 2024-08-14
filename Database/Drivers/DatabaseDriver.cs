@@ -1,6 +1,7 @@
 namespace DatabaseNS.Drivers;
 
 using DatabaseNS.Components;
+using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.CommandParserNS.States;
@@ -26,7 +27,7 @@ public class DatabaseDriver {
             return ProcessCommand(command);
         } catch (ResultException e)  {
             return e.Result;
-        } catch (Exception e) {
+        } catch (Exception) {
             return //TODO cover unexpected exceptions;
         }
     }
@@ -52,8 +53,7 @@ public class DatabaseDriver {
             return Database.RemoveCollection(collectionCommand.Collection);
         } else if (command is DocumentCommand documentCommand) {
             return Database.RemoveDocument(documentCommand.Collection, documentCommand.Document);
-        } else if (command is ContentCollectionCommand contentCollectionCommand)
-            //Bulk remove
+        }
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
@@ -68,7 +68,9 @@ public class DatabaseDriver {
 
     private Result processLoadCmd(Command command) {
         if (command is ContentCollectionCommand contentCollectionCommand) {
-            // Bulk load of documents
+            ComponentPath path = "".AsPath();
+            if (contentCollectionCommand.TryGetPath(0, out path))
+                Database.LoadDocuments(contentCollectionCommand.Collection, path);
         }
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }

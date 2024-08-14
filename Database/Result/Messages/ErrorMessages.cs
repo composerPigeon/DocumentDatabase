@@ -28,6 +28,9 @@ internal static class ErrorMessages {
     public static Message ComponentNameMissing() {
         return new Message("Component name is missing.");
     }
+    public static Message SomeDocumentExisted(ComponentName collection) {
+        return new Message($"Some of the loaded documents to the collection '{collection}' already existed.");
+    }
 
     // ====== Command parse errors ======
     public static Message CommandParseCommandEmpty() {

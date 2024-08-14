@@ -23,7 +23,7 @@ internal static class FileSystemAccessHandler {
         return options;
     }
 
-    private static IEnumerable<ComponentPath> listDirectory(ComponentPath directory) {
+    public static IEnumerable<ComponentPath> ListDirectory(ComponentPath directory) {
         foreach (string stringPath in Directory.EnumerateFileSystemEntries(directory)) {
             yield return stringPath.AsPath();
         }
@@ -78,6 +78,15 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    public static void AddDocument(Document document, ComponentPath filePath) {
+        try {
+            File.Copy(filePath, document.Path);
+            writeAsJson(document.Stats);
+        } catch (Exception e) when (e is DirectoryNotFoundException || e is UnauthorizedAccessException) {
+            throw Handlers.Exception.ThrowDocumentFileCreate(document.Name, e);
+        }
+    }
+
     public static void RemoveDocument(Document document) {
         try {
             File.Delete(document.Path);
@@ -92,6 +101,14 @@ internal static class FileSystemAccessHandler {
             return File.ReadAllText(document.Path);
         } catch (Exception e) when (e is FileLoadException || e is UnauthorizedAccessException || e is FileNotFoundException) {
             throw Handlers.Exception.ThrowDocumentFileRead(document.Name, e);
+        }
+    }
+
+    public static StreamReader OpenFile(ComponentPath path) {
+        try {
+            return new StreamReader(path);
+        } catch (Exception e) when (e is FileLoadException || e is UnauthorizedAccessException || e is FileNotFoundException) {
+            throw Handlers.Exception.ThrowFileRead(path, e);
         }
     }
 
@@ -129,7 +146,7 @@ internal static class FileSystemAccessHandler {
         };
         options.Converters.Add(new NameToStringAsPropertyConverter());
 
-        foreach (var collectionPath in listDirectory(path)) {
+        foreach (var collectionPath in ListDirectory(path)) {
             Collection collection = loadCollection(collectionPath);
             collections.Add(collection.Name, collection);
         }
@@ -142,7 +159,7 @@ internal static class FileSystemAccessHandler {
         builder.Documents = new Dictionary<ComponentName, Document>();
         builder.Index = loadFromJson<Index>(getIndexFilePath(collectionPath));
 
-        foreach(var componentPath in listDirectory(collectionPath)) {
+        foreach(var componentPath in ListDirectory(collectionPath)) {
             if (componentPath.EndsWith(".txt")) {
                 ComponentName documentName = componentPath.GetComponentName();
                 Document document = loadDocument(collectionPath, documentName);

@@ -26,6 +26,9 @@ internal class ErrorHandler : ResultHandler {
     public Result HandleComponentNameMissing() {
         return InitResult(ErrorMessages.ComponentNameMissing(), ResultType.BadRequest);
     }
+    public Result HandleDocumentsSomeExisted(ComponentName collection) {
+        return InitResult(ErrorMessages.SomeDocumentExisted(collection), ResultType.BadRequest);
+    }
 
     // ====== Command parse errors ======
 

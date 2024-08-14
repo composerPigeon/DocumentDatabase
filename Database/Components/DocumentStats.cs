@@ -16,8 +16,17 @@ internal class DocumentStats : DatabaseComponent {
         WordsTF = wordsTF;
     }
 
-    public static DocumentStats ReadDocument(ComponentName name, ComponentPath path, string content) {
-        WordCounter counter = DocumentParser.Parse(content);
+    public static DocumentStats Create(ComponentName name, ComponentPath path, string documentContent) {
+        WordCounter counter = DocumentParser.Parse(documentContent);
+        DocumentStatsBuilder builder = CreateBuilder();
+        builder.WordsTF = counter.Calculate();
+        builder.Path = path;
+        builder.Name = name;
+        return builder.Build();
+    }
+
+    public static DocumentStats Create(ComponentName name, ComponentPath path, ComponentPath filePath) {
+        WordCounter counter = DocumentParser.Parse(filePath);
         DocumentStatsBuilder builder = CreateBuilder();
         builder.WordsTF = counter.Calculate();
         builder.Path = path;

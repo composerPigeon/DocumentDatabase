@@ -1,13 +1,13 @@
 namespace DatabaseNS.Components;
 
-using System.Text;
-
 using DatabaseNS.Components.Builders;
 using DatabaseNS.Components.Values;
 using DatabaseNS.Components.IndexNS;
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.ResultNS;
 using DatabaseNS.FileSystem;
+using DatabaseNS.ResultNS.Exceptions;
+using System.Diagnostics;
 
 internal class Collection : DatabaseComponent {
     private Dictionary<ComponentName, Document> _documents;
@@ -37,14 +37,25 @@ internal class Collection : DatabaseComponent {
         return Handlers.Error.HandleDocumentMissing(documentName);
     }
 
-    private Document createDocument(ComponentName documentName, string content) {
-        DocumentStats stats = DocumentStats.ReadDocument(
+    private DocumentStats createDocumentStats(ComponentName documentName, string content) {
+        return DocumentStats.Create(
             documentName.AppendString("_stats"),
             FileSystemAccessHandler.GetIndexDirectoryPath(Path)
                 .AppendPath(documentName.WithExtension(".json")),
             content
         );
+    }
 
+    private DocumentStats createDocumentStats(ComponentName documentName, ComponentPath filePath) {
+        return DocumentStats.Create(
+            documentName.AppendString("_stats"),
+            FileSystemAccessHandler.GetIndexDirectoryPath(Path)
+                .AppendPath(documentName.WithExtension(".json")),
+            filePath
+        );
+    }
+
+    private Document createDocument(ComponentName documentName, DocumentStats stats) {
         DocumentBuilder builder = Document.CreateBuilder();
         builder.Name = documentName;
         builder.Path = Path.AppendPath(documentName.WithExtension(".txt"));
@@ -56,19 +67,53 @@ internal class Collection : DatabaseComponent {
         if (_documents.ContainsKey(documentName))
             return Handlers.Error.HandleDocumentExists(documentName);
 
-        Document document = createDocument(documentName, content);
+        Document document = createDocument(documentName, createDocumentStats(documentName, content));
         FileSystemAccessHandler.AddDocument(document, content);
+        try {
+            _index.AddDocument(document);
+        } catch (ResultException) {
+            FileSystemAccessHandler.RemoveDocument(document);
+            throw;
+        }
         _documents.Add(documentName, document);
-        _index.AddDocument(documentName, document.Stats);
         return Handlers.Result.HandleDocumentAdded(documentName);
+    }
+
+    public Result LoadDocuments(IEnumerable<Tuple<ComponentName, ComponentPath>> tuples) {
+        var addedDocuments = new List<Document>();
+        try {
+            if (tuples.All(t => !_documents.ContainsKey(t.Item1))) {
+                foreach(var tuple in tuples) {
+                    Document document = createDocument(tuple.Item1, createDocumentStats(tuple.Item1, tuple.Item2));
+                    addedDocuments.Add(document);
+                    _documents.Add(document.Name, document); 
+                    FileSystemAccessHandler.AddDocument(document, tuple.Item2);
+                }
+                _index.AddDocuments(addedDocuments);
+                return Handlers.Result.HandleDocumentsLoaded(Name);
+            } else {
+                return Handlers.Error.HandleDocumentsSomeExisted(Name);
+            }
+        } catch (ResultException) {
+            foreach(var document in addedDocuments) {
+                _documents.Remove(document.Name);
+                FileSystemAccessHandler.RemoveDocument(document);
+            }
+            throw;
+        }
     }
 
     public Result RemoveDocument(ComponentName documentName) {
         if (_documents.ContainsKey(documentName)) {
             Document document = _documents[documentName];
+            _index.RemoveDocument(document);
+            try {
+                FileSystemAccessHandler.RemoveDocument(document);
+            } catch (ResultException) {
+                _index.AddDocument(document);
+                throw;
+            }
             _documents.Remove(documentName);
-            _index.RemoveDocument(documentName, document.Stats);
-            FileSystemAccessHandler.RemoveDocument(document);
             return Handlers.Result.HandleDocumentRemoved(documentName);
         }
         return Handlers.Error.HandleDocumentMissing(documentName);

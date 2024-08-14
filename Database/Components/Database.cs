@@ -82,6 +82,20 @@ internal class Database : DatabaseComponent {
         return Handlers.Error.HandleCollectionMissing(collectionName);
     }
 
+    public Result LoadDocuments(ComponentName collectionName, ComponentPath path) {
+        if (!_collections.ContainsKey(collectionName)) {
+            var result = CreateCollection(collectionName);
+            if (result.Type != ResultType.Ok)
+                return result;
+        }
+        var tuples = new List<Tuple<ComponentName, ComponentPath>>();
+        foreach (var entry in FileSystemAccessHandler.ListDirectory(path)) {
+            if (entry.EndsWith(".txt"))
+                tuples.Add(new Tuple<ComponentName, ComponentPath>(entry.GetComponentName(), entry));
+        }
+        return _collections[collectionName].LoadDocuments(tuples);
+    }
+
     public static DatabaseBuilder CreateBuilder() {
         return new DatabaseBuilder((collections, path) => new Database(collections, path));
     }

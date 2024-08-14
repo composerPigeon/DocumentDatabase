@@ -1,11 +1,13 @@
 namespace DatabaseNS.Components.IndexNS;
 
+using System.Diagnostics.Metrics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
 using DatabaseNS.Components.Values;
 using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS;
+using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.ResultNS.Handlers;
 
 internal class Index : DatabaseComponent {
@@ -67,9 +69,32 @@ internal class Index : DatabaseComponent {
         }
     }
 
-    public void AddDocument(ComponentName documentName, DocumentStats stats) {
-        addDocument(documentName, stats);
-        FileSystemAccessHandler.SaveIndex(this);
+    public void AddDocument(Document document) {
+        addDocument(document.Name, document.Stats);
+        try {
+            FileSystemAccessHandler.SaveIndex(this);
+        } catch (ResultException) {
+            removeDocument(document.Name, document.Stats);
+            throw;
+        }
+    }
+
+    public void AddDocuments(IEnumerable<Document> documents) {
+        var addedDocuments = new List<Document>();
+        foreach(var document in documents) {
+            addDocument(document.Name, document.Stats);
+            addedDocuments.Add(document);
+        }
+
+        try {
+            FileSystemAccessHandler.SaveIndex(this);
+        } catch (ResultException) {
+            foreach(var document in addedDocuments) {
+                removeDocument(document.Name, document.Stats);
+            }
+            throw;
+        }
+        
     }
 
     private void removeDocument(ComponentName documentName, DocumentStats stats) {
@@ -85,9 +110,15 @@ internal class Index : DatabaseComponent {
         }
     }
 
-    public void RemoveDocument(ComponentName documentName, DocumentStats stats) {
-        removeDocument(documentName, stats);
-        FileSystemAccessHandler.SaveIndex(this);
+    public void RemoveDocument(Document document) {
+        removeDocument(document.Name, document.Stats);
+        try {
+            FileSystemAccessHandler.SaveIndex(this);
+        } catch (ResultException) {
+            addDocument(document.Name, document.Stats);
+            throw;
+        }
+        
     }
 
     private double calculateCosineSimilarity(double[] query, double[] document, double[] idfs) {

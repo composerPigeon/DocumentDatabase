@@ -35,8 +35,10 @@ internal class CorrectHandler : ResultHandler {
     public Result HandleListCollections(IEnumerable<ComponentName> collections) {
         return InitResult(CorrectMessages.ListCollections(collections), ResultType.Ok);
     }
-
     public Result HandleListDocuments(ComponentName collection, IEnumerable<ComponentName> documents) {
         return InitResult(CorrectMessages.ListDocuments(collection, documents), ResultType.Ok);
+    }
+    public Result HandleDocumentsLoaded(ComponentName collection) {
+        return InitResult(CorrectMessages.DocumentsLoaded(collection), ResultType.Ok);
     }
 }

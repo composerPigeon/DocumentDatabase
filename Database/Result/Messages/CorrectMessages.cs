@@ -55,11 +55,15 @@ public class CorrectMessages {
 
     internal static Message ListDocuments(ComponentName collection, IEnumerable<ComponentName> documents) {
         var buffer = new StringBuilder();
-        buffer.AppendLine($"Documents from collection '{collection}'");
+        buffer.AppendLine($"Documents in collection '{collection}':");
         foreach(var document in documents) {
             buffer.AppendLine($"  - {document}");
         }
         return new Message(buffer.ToString());
+    }
+
+    internal static Message DocumentsLoaded(ComponentName collection) {
+        return new Message($"All of the documents were loaded to collection '{collection}'.");
     }
 
 }
