@@ -1,7 +1,5 @@
 namespace DatabaseNS.Components.IndexNS;
 
-using System.Diagnostics.Metrics;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
 using DatabaseNS.Components.Values;
@@ -58,7 +56,7 @@ internal class Index : DatabaseComponent {
     private void addDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount += 1;
         foreach(var entry in stats.WordsTF) {
-            if (_wordByDocumentTF.ContainsKey(entry.Key))
+            if (_wordDocumentCounts.ContainsKey(entry.Key))
                 _wordDocumentCounts[entry.Key] += 1;
             else
                 _wordDocumentCounts[entry.Key] = 1;
@@ -100,13 +98,13 @@ internal class Index : DatabaseComponent {
     private void removeDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount -= 1;
         foreach(var entry in stats.WordsTF) {
-            if (_wordByDocumentTF.ContainsKey(entry.Key) && _wordDocumentCounts[entry.Key] > 1)
+            if (_wordDocumentCounts.ContainsKey(entry.Key) && _wordDocumentCounts[entry.Key] > 1)
                 _wordDocumentCounts[entry.Key] -= 1;
-            else if (_wordByDocumentTF.ContainsKey(entry.Key)) {
+            else if (_wordDocumentCounts.ContainsKey(entry.Key)) {
                 _wordDocumentCounts.Remove(entry.Key);
             }
             if (_wordByDocumentTF.ContainsKey(entry.Key))
-                _wordByDocumentTF[entry.Key].Remove(documentName);
+                _wordByDocumentTF[entry.Key].Remove(documentName); //Remove returns false if element is not present
         }
     }
 

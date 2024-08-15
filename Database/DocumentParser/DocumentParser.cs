@@ -17,8 +17,6 @@ internal class DocumentParser {
                 if (token.Word != null)
                     if (!StopWords.Contains(token.Word))
                         counter.AddWord(token.Word);
-                    else
-                        counter.AddWord(token.Word);
                 token = reader.Read();
             }
             return counter;
@@ -33,8 +31,6 @@ internal class DocumentParser {
             while (!token.IsLast) {
                 if (token.Word != null)
                     if (!StopWords.Contains(token.Word))
-                        counter.AddWord(token.Word);
-                    else
                         counter.AddWord(token.Word);
                 token = reader.Read();
             }

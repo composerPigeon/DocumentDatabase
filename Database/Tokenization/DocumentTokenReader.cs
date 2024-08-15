@@ -46,7 +46,7 @@ internal class DocumentTokenReader : TokenReader {
             return new Token(flush(false));
         }
 
-        return new Token();
+        return Token.Last;
     }
 
     private string flush(bool removeLastChar) {

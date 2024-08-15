@@ -39,6 +39,15 @@ internal readonly struct Token : IEquatable<Token> {
         return "\n".GetHashCode();
     }
 
+    public override string ToString() {
+        if (Word == null && IsLast)
+            return "EOF";
+        else if (Word == null)
+            return "";
+        else
+            return Word;
+    }
+
     public static bool operator ==(Token left, Token right) {
         return left.Equals(right);
     }

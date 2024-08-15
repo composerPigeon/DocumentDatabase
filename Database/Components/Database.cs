@@ -89,9 +89,13 @@ internal class Database : DatabaseComponent {
                 return result;
         }
         var tuples = new List<Tuple<ComponentName, ComponentPath>>();
-        foreach (var entry in FileSystemAccessHandler.ListDirectory(path)) {
-            if (entry.EndsWith(".txt"))
-                tuples.Add(new Tuple<ComponentName, ComponentPath>(entry.GetComponentName(), entry));
+        try {
+            foreach (var entry in FileSystemAccessHandler.ListDirectory(path)) {
+                if (entry.EndsWith(".txt"))
+                    tuples.Add(new Tuple<ComponentName, ComponentPath>(entry.GetComponentName(), entry));
+            }
+        } catch (DirectoryNotFoundException) {
+            return Handlers.Error.HandleLoadDocumentsInvalidDirectory(path);
         }
         return _collections[collectionName].LoadDocuments(tuples);
     }

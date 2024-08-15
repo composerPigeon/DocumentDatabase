@@ -2,6 +2,7 @@ namespace DatabaseNS.Components.Builders;
 
 using DatabaseNS.Components.IndexNS;
 using DatabaseNS.Components.Values;
+using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS.Handlers;
 
 internal class CollectionBuilder : DatabaseComponentBuilder<Collection> {
@@ -16,14 +17,15 @@ internal class CollectionBuilder : DatabaseComponentBuilder<Collection> {
 
     private Index buildIndex(ComponentName collectionName, ComponentPath collectionPath) {
         var index = Index.CreateBuilder();
-        //var indexPath = EntryCreator.CreateCollectionDirectories(collectionPath);
         index.Name = collectionName.AppendString("_index");
-        //index.Path = indexPath;
-        return index.Build();
+        index.Path = FileSystemAccessHandler.GetIndexDirectoryPath(collectionPath).AppendString("index.json");
+        var inx = index.Build();
+        FileSystemAccessHandler.AddIndex(collectionPath, inx);
+        return inx;
     }
 
     public override Collection Build() {
-        if (Name.HasValue && Path.HasValue) {
+        if (Name.HasValue && Path.HasValue && Name.Value.IsSafe()) {
             if (Index != null && Documents != null) {
                 return _init(
                     Name.Value,

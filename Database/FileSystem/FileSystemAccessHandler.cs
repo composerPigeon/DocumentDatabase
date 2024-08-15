@@ -11,7 +11,6 @@ using DatabaseNS.ResultNS.Handlers;
 internal static class FileSystemAccessHandler {
 
     private static JsonSerializerOptions jsonSerializerOptions = initOptions();
-
     private static readonly ComponentPath INDEX_DIR = ".index".AsPath();
     public static readonly ComponentPath DATA_DIR = "data".AsPath();
 
@@ -33,7 +32,7 @@ internal static class FileSystemAccessHandler {
         where TComponent : DatabaseComponent
     {
         try {
-            string content = JsonSerializer.Serialize(component);
+            string content = JsonSerializer.Serialize(component, jsonSerializerOptions);
             File.WriteAllText(component.Path, content);
         } catch (Exception e) when (e is JsonException || e is DirectoryNotFoundException || e is UnauthorizedAccessException) {
             throw Handlers.Exception.ThrowComponentAsJsonSave(component.Path, e);
@@ -66,6 +65,15 @@ internal static class FileSystemAccessHandler {
         } catch (Exception e) when ( e is DirectoryNotFoundException || e is UnauthorizedAccessException) {
             Handlers.Exception.ThrowCollectionDirectoryRemove(collection.Name, e);
         }   
+    }
+
+    public static void AddIndex(ComponentPath collectionPath, Index index) {
+        try {
+            Directory.CreateDirectory(collectionPath.AppendPath(INDEX_DIR));
+            writeAsJson(index);
+        } catch (Exception e) when (e is DirectoryNotFoundException || e is JsonException || e is UnauthorizedAccessException || e is IOException) {
+            Handlers.Exception.ThrowIndexDirectoryCreate(index.Name, e);
+        }
     }
 
     // Creates files in file system for document and its statistics
@@ -132,6 +140,10 @@ internal static class FileSystemAccessHandler {
     }
 
     public static Database LoadDatabase() {
+        if (!Directory.Exists(DATA_DIR)) {
+            Directory.CreateDirectory(DATA_DIR);
+        }
+
         DatabaseBuilder builder = Database.CreateBuilder();
         builder.Path = DATA_DIR;
         builder.Collections = loadCollections(DATA_DIR);
@@ -141,10 +153,6 @@ internal static class FileSystemAccessHandler {
     // Iterates through data directory and load each subdirectory as collection
     private static Dictionary<ComponentName, Collection> loadCollections(ComponentPath path) {
         var collections = new Dictionary<ComponentName, Collection>();
-        var options = new JsonSerializerOptions() {
-            WriteIndented = true,
-        };
-        options.Converters.Add(new NameToStringAsPropertyConverter());
 
         foreach (var collectionPath in ListDirectory(path)) {
             Collection collection = loadCollection(collectionPath);
@@ -156,6 +164,8 @@ internal static class FileSystemAccessHandler {
     //Loads directory as a collection
     private static Collection loadCollection(ComponentPath collectionPath) {
         var builder = Collection.CreateBuilder();
+        builder.Path = collectionPath;
+        builder.Name = collectionPath.GetComponentName();
         builder.Documents = new Dictionary<ComponentName, Document>();
         builder.Index = loadFromJson<Index>(getIndexFilePath(collectionPath));
 

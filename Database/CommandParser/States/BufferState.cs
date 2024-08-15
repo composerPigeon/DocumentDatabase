@@ -1,6 +1,6 @@
 namespace DatabaseNS.CommandParserNS.States;
 
-using DatabaseNS.FileSystem;
+using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.Tokenization;
 
@@ -31,7 +31,7 @@ internal abstract class BufferState : State {
 
     protected void addTokenToBuffer(Token token) {
         if (bufferCount + 1 > _maxBufferCount)
-            throw Handlers.Error.ThrowCommandParseInvalidToken(token);
+            throw Handlers.Exception.ThrowCommandParseInvalidToken(token);
         _buffer.Enqueue(token);
     }
 
@@ -41,10 +41,10 @@ internal abstract class BufferState : State {
 
     protected ComponentName? getNameFromBuffer() {
         Token t = _buffer.Dequeue();
-        if (t.IsLast && t.Word != null) {
+        if (!t.IsLast && t.Word != null) {
             return t.Word.ToName();
         }
-        throw Handlers.Error.ThrowCommandParseInvalidToken(t);
+        throw Handlers.Exception.ThrowCommandParseInvalidToken(t);
     }
 
     protected List<string> getContentFromBuffer() {

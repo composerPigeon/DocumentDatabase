@@ -30,9 +30,7 @@ public class DatabaseDriver {
     }
 
     private Result processCreateCmd(Command command) {
-        if (command is CollectionCommand collectionCommand) {
-            return Database.CreateCollection(collectionCommand.Collection);
-        } else if (command is ContentDocumentCommand contentDocumentCommand) {
+        if (command is ContentDocumentCommand contentDocumentCommand) {
             string content;
             if (contentDocumentCommand.TryGetString(0, out content)) {
                 return Database.AddDocument(
@@ -41,16 +39,16 @@ public class DatabaseDriver {
                     content
                 );
             }
-        }
+        } else if (command is CollectionCommand collectionCommand)
+            return Database.CreateCollection(collectionCommand.Collection);
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
     private Result processDeleteCmd(Command command) {
-        if (command is CollectionCommand collectionCommand) {
-            return Database.RemoveCollection(collectionCommand.Collection);
-        } else if (command is DocumentCommand documentCommand) {
+        if (command is DocumentCommand documentCommand) {
             return Database.RemoveDocument(documentCommand.Collection, documentCommand.Document);
-        }
+        } else if (command is CollectionCommand collectionCommand)
+            return Database.RemoveCollection(collectionCommand.Collection);
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
@@ -65,9 +63,11 @@ public class DatabaseDriver {
 
     private Result processLoadCmd(Command command) {
         if (command is ContentCollectionCommand contentCollectionCommand) {
-            ComponentPath path = "".AsPath();
-            if (contentCollectionCommand.TryGetPath(0, out path)) {
-                if (Type == DriverType.Server) {
+            ComponentPath path;
+            if (contentCollectionCommand.TryGetPath(0, out path))
+            {
+                if (Type == DriverType.Server)
+                {
                     return Handlers.Error.HandleCommandNotSupported(command.Value);
                 }
                 return Database.LoadDocuments(contentCollectionCommand.Collection, path);

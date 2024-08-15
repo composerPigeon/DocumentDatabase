@@ -45,7 +45,7 @@ internal struct ComponentName : IComparable<ComponentName>, IEquatable<Component
     }
 
     public bool IsSafe() {
-        if (!_value.Contains("/"))
+        if (!_value.Contains("/") && !_value.EndsWith("_index"))
             return true;
         return false;
     }

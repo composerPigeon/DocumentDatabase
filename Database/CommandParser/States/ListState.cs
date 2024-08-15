@@ -10,7 +10,7 @@ internal class ListState : BufferState {
             return new FinalState(this);
         } else if (token == Token.Last && bufferCount == 1) {
             builder.Collection = getNameFromBuffer();
-            return new CollectionState(this);
+            return new FinalState(this);
         } else {
             addTokenToBuffer(token);
             return this;

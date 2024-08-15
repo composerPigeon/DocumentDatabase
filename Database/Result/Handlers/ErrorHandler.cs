@@ -27,8 +27,14 @@ internal class ErrorHandler : ResultHandler {
     public Result HandleComponentNameMissing() {
         return InitResult(ErrorMessages.ComponentNameMissing(), ResultType.BadRequest);
     }
-    public Result HandleDocumentsSomeExisted(ComponentName collection) {
-        return InitResult(ErrorMessages.SomeDocumentExisted(collection), ResultType.BadRequest);
+    public Result HandleLoadDocumentsSomeExisted(ComponentName collection) {
+        return InitResult(ErrorMessages.LoadDocumentsSomeExisted(collection), ResultType.BadRequest);
+    }
+    public Result HandleLoadDocumentsEmpty(ComponentName collection) {
+        return InitResult(ErrorMessages.LoadDocumentsEmpty(collection), ResultType.BadRequest);
+    }
+    public Result HandleLoadDocumentsInvalidDirectory(ComponentPath path) {
+        return InitResult(ErrorMessages.LoadDocumentsInvalidDirectory(path), ResultType.BadRequest);
     }
 
     // ====== Command parse errors ======

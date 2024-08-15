@@ -7,7 +7,6 @@ using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.ResultNS;
 using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS.Exceptions;
-using System.Diagnostics;
 
 internal class Collection : DatabaseComponent {
     private Dictionary<ComponentName, Document> _documents;
@@ -79,9 +78,12 @@ internal class Collection : DatabaseComponent {
         return Handlers.Result.HandleDocumentAdded(documentName);
     }
 
-    public Result LoadDocuments(IEnumerable<Tuple<ComponentName, ComponentPath>> tuples) {
+    public Result LoadDocuments(ICollection<Tuple<ComponentName, ComponentPath>> tuples) {
         var addedDocuments = new List<Document>();
         try {
+            if (tuples.Count == 0) {
+                return Handlers.Error.HandleLoadDocumentsEmpty(Name);
+            }
             if (tuples.All(t => !_documents.ContainsKey(t.Item1))) {
                 foreach(var tuple in tuples) {
                     Document document = createDocument(tuple.Item1, createDocumentStats(tuple.Item1, tuple.Item2));
@@ -92,7 +94,7 @@ internal class Collection : DatabaseComponent {
                 _index.AddDocuments(addedDocuments);
                 return Handlers.Result.HandleDocumentsLoaded(Name);
             } else {
-                return Handlers.Error.HandleDocumentsSomeExisted(Name);
+                return Handlers.Error.HandleLoadDocumentsSomeExisted(Name);
             }
         } catch (ResultException) {
             foreach(var document in addedDocuments) {

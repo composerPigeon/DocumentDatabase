@@ -19,8 +19,8 @@ internal struct ComponentPath {
     public ComponentName GetComponentName() {
         if (Directory.Exists(_value))
             return new DirectoryInfo(_value).Name.ToName();
-        if (File.Exists(_value))
-            return new FileInfo(_value).Name.ToName();
+        else if (File.Exists(_value))
+            return Path.GetFileNameWithoutExtension(_value).ToName();
         else
             return ComponentName.Empty;
     }
@@ -41,6 +41,10 @@ internal struct ComponentPath {
         return new ComponentPath() {
             _value = Path.Combine(this._value, name.ToString())
         };
+    }
+
+    public override string ToString() {
+        return _value;
     }
 
     public static implicit operator string(ComponentPath path) {

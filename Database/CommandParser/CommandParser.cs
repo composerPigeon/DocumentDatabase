@@ -11,10 +11,12 @@ internal static class CommandParser {
             State state = new StartState();
 
             Token token = reader.Read();
-            do {
+            while (true) {
                 state = state.NextState(token);
+                if (token.IsLast)
+                    break;
                 token = reader.Read();
-            } while (!token.IsLast);
+            }
 
             if (state is FinalState finalState)
                 return finalState.GetCommand(command);

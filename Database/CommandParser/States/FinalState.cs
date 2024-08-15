@@ -9,7 +9,7 @@ internal class FinalState : State {
     public FinalState(State state) : base(state) {}
 
     public override State NextState(Token token) {
-        throw Handlers.Error.ThrowCommandParseInvalidState();
+        throw Handlers.Exception.ThrowCommandParseInvalidState();
     }
 
     public Command GetCommand(string command) {

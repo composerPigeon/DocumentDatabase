@@ -10,6 +10,6 @@ internal class EmptyState : State {
         if (token.IsLast) {
             return new FinalState(this);
         }
-        throw Handlers.Error.ThrowCommandParseInvalidToken(token);
+        throw Handlers.Exception.ThrowCommandParseInvalidToken(token);
     }
 }

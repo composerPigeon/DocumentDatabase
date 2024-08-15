@@ -1,5 +1,6 @@
 namespace DatabaseNS.ResultNS.Messages;
 
+using System.Diagnostics;
 using DatabaseNS.Components.Values;
 using DatabaseNS.Tokenization;
 
@@ -28,8 +29,14 @@ internal static class ErrorMessages {
     public static Message ComponentNameMissing() {
         return new Message("Component name is missing.");
     }
-    public static Message SomeDocumentExisted(ComponentName collection) {
+    public static Message LoadDocumentsSomeExisted(ComponentName collection) {
         return new Message($"Some of the loaded documents to the collection '{collection}' already existed.");
+    }
+    public static Message LoadDocumentsEmpty(ComponentName collection) {
+        return new Message($"No text files were found in directory when loading documents to collection '{collection}'.");
+    }
+    public static Message LoadDocumentsInvalidDirectory(ComponentPath path) {
+        return new Message($"Inputted path '{path}' for load command is not valid directory.");
     }
 
     // ====== Command parse errors ======
@@ -97,6 +104,10 @@ internal static class ErrorMessages {
         );
     }
 
+    public static Message IndexDirectoryCreate(ComponentName indexName) {
+        return new Message($"Index directory for index '{indexName}' coudln't be created.");
+    }
+
     public static Message DocumentFileCreate(ComponentName documentName) {
         return new Message(
             string.Format("File for document '{0}' couldn't be created.", documentName)
@@ -113,6 +124,10 @@ internal static class ErrorMessages {
         return new Message(
             string.Format("File for document '{0}' couldn't be read.", documentName)
         );
+    }
+
+    public static Message FileRead(ComponentPath path) {
+        return new Message($"File '{path}' coudln't be opened.");
     }
 
     public static Message ComponentAsJsonSave(ComponentPath path) {

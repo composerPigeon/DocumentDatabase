@@ -86,8 +86,6 @@ internal class ExceptionHandler : ResultHandler {
         );
     }
 
-    // ====== Database load exceptions ======
-
     // ====== File system access exceptions ======
 
     public ResultException ThrowDocumentFileRemove(ComponentName documentName, Exception cause) {
@@ -125,6 +123,13 @@ internal class ExceptionHandler : ResultHandler {
         );
     }
 
+    public ResultException ThrowIndexDirectoryCreate(ComponentName indexName, Exception cause) {
+        return new DatabaseException(
+            InitResultWithException(ErrorMessages.IndexDirectoryCreate(indexName), ResultType.InternalServerError, cause),
+            cause
+        );
+    }
+
     public ResultException ThrowComponentAsJsonSave(ComponentPath path, Exception cause) {
         return new DatabaseException(
             InitResultWithException(ErrorMessages.ComponentAsJsonSave(path), ResultType.InternalServerError, cause),
@@ -135,6 +140,13 @@ internal class ExceptionHandler : ResultHandler {
     public ResultException ThrowComponentFromJsonLoad(ComponentPath path, Exception cause) {
         return new DatabaseException(
             InitResultWithException(ErrorMessages.ComponentFromJsonLoad(path), ResultType.InternalServerError, cause),
+            cause
+        );
+    }
+
+    public ResultException ThrowFileRead(ComponentPath path, Exception cause) {
+        return new DatabaseException(
+            InitResultWithException(ErrorMessages.FileRead(path), ResultType.InternalServerError, cause),
             cause
         );
     }

@@ -10,7 +10,7 @@ internal class IndexBuilder : DatabaseComponentBuilder<Index> {
         _init = init;
     }
     public override Index Build() {
-        if (Name.HasValue && Name.Value.IsSafe()) {
+        if (Name.HasValue) {
             if (Path.HasValue) {
                 return _init(Name.Value, Path.Value);
             }
