@@ -26,9 +26,9 @@ public class Program
         Console.WriteLine("------------------------------");
         switch (result.Type) {
             case ResultType.Ok:
-                return Results.Ok(result.Message);
+                return Results.Ok(result.Message.ToString());
             case ResultType.BadRequest:
-                return Results.BadRequest(result.Message);
+                return Results.BadRequest(result.Message.ToString());
             case ResultType.InternalServerError:
                 return Results.StatusCode(500);
             default:
