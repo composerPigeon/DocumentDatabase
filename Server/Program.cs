@@ -21,6 +21,9 @@ public class Program
     public static async Task<IResult> PostQuery(HttpRequest request) {
         string body = await new StreamReader(request.Body).ReadToEndAsync();
         Result result = _driver.Execute(body);
+        Console.WriteLine($"Command: {body}");
+        Console.WriteLine(result);
+        Console.WriteLine("------------------------------");
         switch (result.Type) {
             case ResultType.Ok:
                 return Results.Ok(result.Message);
