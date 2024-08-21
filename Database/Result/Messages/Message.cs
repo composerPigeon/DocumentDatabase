@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace DatabaseNS.ResultNS.Messages;
 
 public struct Message {
@@ -10,5 +13,16 @@ public struct Message {
 
     public override string ToString() {
         return _value;
+    }
+}
+
+internal class MessageJsonConverter : JsonConverter<Message>
+{
+    public override Message Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+        return new Message(reader.GetString()!);
+    }
+
+    public override void Write(Utf8JsonWriter writer, Message value, JsonSerializerOptions options) {
+        writer.WriteStringValue(value.ToString());
     }
 }

@@ -18,8 +18,9 @@ public class DatabaseDriver {
         Type = type;
     }
 
-    public Result Execute(string input) {
+    public Result Execute(string? input) {
         try {
+            input = input == null ? "" : input; // set input to empty string if input was null
             Command command = CommandParser.Parse(input);
             return ProcessCommand(command);
         } catch (ResultException e)  {

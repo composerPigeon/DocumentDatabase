@@ -4,6 +4,9 @@ using System.Text;
 
 using DatabaseNS.ResultNS.Messages;
 using DatabaseNS.ResultNS.Handlers;
+using System.Text.Json;
+using System.Linq.Expressions;
+using System.Text.Json.Serialization;
 
 public struct Result {
     public Message Message { get; init;}
@@ -55,6 +58,23 @@ public struct Result {
             errorHandler
         );
     }
+
+    private static JsonSerializerOptions _options = initOptions();
+
+    private static JsonSerializerOptions initOptions() {
+        var options = new JsonSerializerOptions() {
+            WriteIndented = true
+        };
+        options.Converters.Add(new MessageJsonConverter());
+        options.Converters.Add(new ResultTypeJsonConverter());
+        return options;
+    }
+
+    public static JsonSerializerOptions JsonSerializerOptions {
+        get {
+            return _options;
+        }
+    }
 }
 
 public enum ResultType {
@@ -75,5 +95,23 @@ public static class DatabaseResultTypeEtensions {
             default:
                 return "";
         }
+    }
+}
+
+public class ResultTypeJsonConverter : JsonConverter<ResultType>
+{
+    public override ResultType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+        switch(reader.GetString()!) {
+            case "Ok":
+                return ResultType.Ok;
+            case "BadRequest":
+                return ResultType.BadRequest;
+            default:
+                return ResultType.InternalServerError;
+        }
+    }
+
+    public override void Write(Utf8JsonWriter writer, ResultType value, JsonSerializerOptions options) {
+        writer.WriteStringValue(value.GetString());
     }
 }
