@@ -5,7 +5,6 @@ using System.Text;
 using DatabaseNS.ResultNS.Messages;
 using DatabaseNS.ResultNS.Handlers;
 using System.Text.Json;
-using System.Linq.Expressions;
 using System.Text.Json.Serialization;
 
 public struct Result {
@@ -22,19 +21,6 @@ public struct Result {
         Message = message;
         Type = type;
         Cause = cause;
-    }
-
-    public override string ToString() {
-        var buffer = new StringBuilder();
-        buffer.AppendLine("Result:");
-        buffer.AppendLine($"  - Type: {Type}");
-        buffer.AppendLine($"  - Message: {Message}");
-
-        if (Cause != null) {
-            buffer.AppendLine($"  - Cause: {Cause}");
-        }
-
-        return buffer.ToString();
     }
 
     internal static CorrectHandler GetResultHandler() {
