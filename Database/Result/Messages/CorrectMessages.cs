@@ -13,7 +13,7 @@ public class CorrectMessages {
         return new Message($"Document '{documentName}' was successfully removed");
     }
     internal static Message DocumentReturned(ComponentName documentName, string content) {
-        return new Message($"Document '{documentName}': \n {content}");
+        return new Message($"Document '{documentName}': {Environment.NewLine} {content}");
     }
     internal static Message CollectionCreated(ComponentName collectionName) {
         return new Message($"Collection '{collectionName}' was created");
