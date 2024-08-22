@@ -3,6 +3,7 @@ namespace Server;
 using System.Text.Json;
 using DatabaseNS.Drivers;
 using DatabaseNS.ResultNS;
+using DatabaseNS.ResultNS.LoggerNS;
 
 public class Program
 {
@@ -19,13 +20,13 @@ public class Program
             Result result = _driver.Execute(dbRequest.Command);
             switch (result.Type) {
                 case ResultType.Ok:
-                    _logger.Info(dbRequest.Command, result);
+                    _logger.LogInfo(dbRequest.Command, result);
                     return Results.Ok(new { Ok = result.Message.ToString() });
                 case ResultType.BadRequest:
-                    _logger.Error(dbRequest.Command, result);
+                    _logger.LogError(dbRequest.Command, result);
                     return Results.BadRequest(new { Error = result.Message.ToString() });
                 default:
-                    _logger.Error(dbRequest.Command, result);
+                    _logger.LogError(dbRequest.Command, result);
                     return Results.StatusCode(500);
             }
         });

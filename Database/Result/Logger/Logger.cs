@@ -1,7 +1,7 @@
+namespace DatabaseNS.ResultNS.LoggerNS;
+
 using System.Text.Json;
 using DatabaseNS.ResultNS;
-
-namespace Server;
 
 public class DatabaseLogger {
     private TextWriter _writer;
@@ -9,7 +9,7 @@ public class DatabaseLogger {
         _writer = writer;
     }
 
-    public void Info(string? command, Result result) {
+    public void LogInfo(string? command, Result result) {
         string content = JsonSerializer.Serialize(new LoggerRecord() {
             Type = "Info",
             Command = command,
@@ -18,16 +18,7 @@ public class DatabaseLogger {
         _writer.WriteLine(content);
     }
 
-    public void Warn(string? command, Result result) {
-        string content = JsonSerializer.Serialize(new LoggerRecord() {
-            Type = "Warning",
-            Command = command,
-            Result = result
-        }, Result.JsonSerializerOptions);
-        _writer.WriteLine(content);
-    }
-
-    public void Error(string? command, Result result) {
+    public void LogError(string? command, Result result) {
         string content = JsonSerializer.Serialize(new LoggerRecord() {
             Type = "Error",
             Command = command,
