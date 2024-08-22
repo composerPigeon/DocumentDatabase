@@ -7,6 +7,7 @@ using DatabaseNS.ResultNS.Handlers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+// strcut which represents the result of command processing
 public struct Result {
     public Message Message { get; init;}
     public Exception? Cause { get; init;}
@@ -23,7 +24,8 @@ public struct Result {
         Cause = cause;
     }
 
-    internal static CorrectHandler GetResultHandler() {
+    // static methods for getting instance of specified handlers
+    internal static CorrectHandler GetCorrectHandler() {
         return new CorrectHandler(
             (message, type) => new Result(message, type),
             (message, type, cause) => new Result(message, type, cause)
@@ -56,6 +58,7 @@ public struct Result {
         return options;
     }
 
+    // property for getting best JsonSerializerOptions when you want to serialize Result to Json
     public static JsonSerializerOptions JsonSerializerOptions {
         get {
             return _options;
@@ -63,12 +66,14 @@ public struct Result {
     }
 }
 
+// says if Result is correct or some error happend
 public enum ResultType {
     Ok,
     BadRequest,
     InternalServerError
 }
 
+// extension method for getting string from ResultType
 public static class DatabaseResultTypeEtensions {
     public static string GetString(this ResultType type) {
         switch (type) {
@@ -84,6 +89,7 @@ public static class DatabaseResultTypeEtensions {
     }
 }
 
+// Converter for converting ResultType to json as a string
 public class ResultTypeJsonConverter : JsonConverter<ResultType>
 {
     public override ResultType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {

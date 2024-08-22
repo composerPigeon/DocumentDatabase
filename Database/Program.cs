@@ -19,10 +19,10 @@ class Program
                 var result = database.Execute(input);
                 switch (result.Type) {
                     case ResultType.Ok:
-                        _logger.LogInfo(input, result);
+                        _logger.LogInfo(result.Message);
                         break;
                     default:
-                        _logger.LogError(input, result);
+                        _logger.LogError(result.Message);
                         break;
                 }
             }

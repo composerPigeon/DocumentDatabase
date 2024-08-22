@@ -6,6 +6,7 @@ using DatabaseNS.Components.Values;
 using DatabaseNS.Components;
 using DatabaseNS.Tokenization;
 
+// class which handles exceptions (factory for ResultExceptions)
 internal class ExceptionHandler : ResultHandler {
 
     private ErrorHandler _error;

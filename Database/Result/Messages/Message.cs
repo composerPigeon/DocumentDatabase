@@ -16,6 +16,7 @@ public struct Message {
     }
 }
 
+//Json converter for message (converts it and reads it as string)
 internal class MessageJsonConverter : JsonConverter<Message>
 {
     public override Message Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {

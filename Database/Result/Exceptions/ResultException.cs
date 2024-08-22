@@ -1,6 +1,7 @@
 namespace DatabaseNS.ResultNS.Exceptions;
 
-public class ResultException : Exception {
+// Class which describes exception that is able to hold Result with it. Does not have any name context so it is abstract
+public abstract class ResultException : Exception {
     public Result Result { get; }
 
     public ResultException(Result result) : base(result.Message.ToString()) {

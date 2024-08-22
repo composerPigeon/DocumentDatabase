@@ -1,6 +1,5 @@
 namespace DatabaseNS.ResultNS.Handlers;
 
-using System.Text;
 using DatabaseNS.Components.IndexNS;
 using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Messages;

@@ -4,6 +4,7 @@ using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Messages;
 using DatabaseNS.Components;
 
+// class which handles errors (factory for Result when error occurs)
 internal class ErrorHandler : ResultHandler {
     public ErrorHandler(
         Func<Message, ResultType, Result> initResult,

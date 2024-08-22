@@ -21,6 +21,7 @@ public class CorrectMessages {
     internal static Message CollectionDropped(ComponentName collectionName) {
         return new Message($"Collection '{collectionName}' was deleted");
     }
+    // builds final message for result of 'find' command
     internal static Message QueryResult(ComponentName collectionName, IEnumerable<IndexRecord> result) {
         var buffer = new StringBuilder("Result for collection '");
         buffer.Append(collectionName).AppendLine("':");
@@ -33,6 +34,7 @@ public class CorrectMessages {
         return new Message($"Treshhold was set to '{newValue:F}'");
     }
 
+    // builds the final message for result of 'list' command
     internal static Message ListCollections(IEnumerable<ComponentName> collections) {
         var buffer = new StringBuilder();
         buffer.AppendLine("Collections:");
@@ -42,6 +44,7 @@ public class CorrectMessages {
         return new Message(buffer.ToString());
     }
 
+    // builds message for result of 'list <collectionName>' command
     internal static Message ListDocuments(ComponentName collection, IEnumerable<ComponentName> documents) {
         var buffer = new StringBuilder();
         buffer.AppendLine($"Documents in collection '{collection}':");
