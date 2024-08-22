@@ -4,31 +4,22 @@ using System.Text;
 using DatabaseNS.Components.IndexNS;
 using DatabaseNS.Components.Values;
 
+// Contains all messages for correct results
 public class CorrectMessages {
     internal static Message DocumentAdded(ComponentName documentName) {
-        return new Message(
-            string.Format("Document '{0}' was added", documentName)
-        );
+        return new Message($"Document '{documentName}' was added");
     }
     internal static Message DocumentRemoved(ComponentName documentName) {
-        return new Message(
-            string.Format("Document '{0}' was successfully removed", documentName)
-        );
+        return new Message($"Document '{documentName}' was successfully removed");
     }
     internal static Message DocumentReturned(ComponentName documentName, string content) {
-        return new Message(
-            string.Format("Document '{0}': \n {1}", documentName, content)
-        );
+        return new Message($"Document '{documentName}': \n {content}");
     }
     internal static Message CollectionCreated(ComponentName collectionName) {
-        return new Message(
-            string.Format("Collection '{0}' was created", collectionName)
-        );
+        return new Message($"Collection '{collectionName}' was created");
     }
     internal static Message CollectionDropped(ComponentName collectionName) {
-        return new Message(
-            string.Format("Collection '{0}' was deleted", collectionName)
-        );
+        return new Message($"Collection '{collectionName}' was deleted");
     }
     internal static Message QueryResult(ComponentName collectionName, IEnumerable<IndexRecord> result) {
         var buffer = new StringBuilder("Result for collection '");
@@ -39,9 +30,7 @@ public class CorrectMessages {
         return new Message(buffer.ToString());
     }
     internal static Message TreshholdSet(double newValue) {
-        return new Message(
-            string.Format("Treshhold was set to '{0}'", newValue)
-        );
+        return new Message($"Treshhold was set to '{newValue:F}'");
     }
 
     internal static Message ListCollections(IEnumerable<ComponentName> collections) {

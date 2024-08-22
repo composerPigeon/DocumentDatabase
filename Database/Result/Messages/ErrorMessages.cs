@@ -4,27 +4,20 @@ using System.Diagnostics;
 using DatabaseNS.Components.Values;
 using DatabaseNS.Tokenization;
 
+// Contains all messages for errors
 internal static class ErrorMessages {
     //Missing & exists components
     public static Message DocumentMissing(ComponentName documentName) {
-        return new Message(
-            string.Format("Document '{0}' does not exist in current collection.", documentName)
-        );
+        return new Message($"Document '{documentName}' does not exist in current collection.");
     }
     public static Message DocumentExists(ComponentName documentName) {
-        return new Message(
-            string.Format("Document '{0}' already exist in current collection.", documentName)
-        );
+        return new Message($"Document '{documentName}' already exist in current collection.");
     }
     public static Message CollectionMissing(ComponentName collectionName) {
-        return new Message(
-            string.Format("Collection '{0}' does not exist in current database.", collectionName)
-        );
+        return new Message($"Collection '{collectionName}' does not exist in current database.");
     }
     public static Message CollectionExists(ComponentName collectionName) {
-        return new Message(
-            string.Format("Collection '{0}' already exist in current database.", collectionName)
-        );
+        return new Message($"Collection '{collectionName}' already exist in current database.");
     }
     public static Message ComponentNameMissing() {
         return new Message("Component name is missing.");
@@ -44,9 +37,7 @@ internal static class ErrorMessages {
         return new Message("Command is empty.");
     }
     public static Message CommandParseInvalidToken(Token token) {
-        return new Message(
-            string.Format("Unexpected token '{0}' occured during command parsing process.", token)
-        );
+        return new Message($"Unexpected token '{token}' occured during command parsing process.");
     }
     public static Message CommandParseInvalidState() {
         return new Message("Command parsing process appeared in unexpected state.");
@@ -54,54 +45,36 @@ internal static class ErrorMessages {
 
     // ====== Invalid values ======
     public static Message CommandInvalid(string command) {
-        return new Message(
-            string.Format("Invalid command '{0}' was inputted.", command)
-        );
+        return new Message($"Invalid command '{command}' was inputted.");
     }
     public static Message ComponentNameInvalid(string componentName, ComponentName name) {
-        return new Message(
-            string.Format("Name '{0}' is invalid for {1}", name, componentName)
-        );
+        return new Message($"Name '{name}' is invalid for {componentName}");
     }
     public static Message TreshholdInvalidFormatValue(string value) {
-        return new Message(
-            string.Format("Inputted value '{0}' of treshhold has invalid format.", value)
-        );
+        return new Message($"Inputted value '{value}' of treshhold has invalid format.");
     }
     public static Message TreshholdInvalidInterval(double value) {
-        return new Message(
-            string.Format("Value '{0}' must be in range from 0 to 1.", value)
-        );
+        return new Message($"Value '{value}' must be in range from 0 to 1.");
     }
     public static Message QueryInvalid(int queryLen, int documentLen) {
-        return new Message(
-            string.Format("Query with length '{0}' and document with length '{1}' does not match.", queryLen, documentLen)
-        );
+        return new Message($"Query with length '{queryLen}' and document with length '{documentLen}' does not match.");
     }
 
     // ====== Load errors ======
     public static Message IndexLoad(ComponentName collectionName) {
-        return new Message(
-            string.Format("Index for collection '{0}' couldn't be loaded.", collectionName)
-        );
+        return new Message($"Index for collection '{collectionName}' couldn't be loaded.");
     }
     public static Message StatsLoad(ComponentName collectionName, ComponentName documentName) {
-        return new Message(
-            string.Format("Document statistics '{0}' from the collection '{1}' couldn't be loaded.", documentName, collectionName)
-        );
+        return new Message($"Document statistics '{documentName}' from the collection '{collectionName}' couldn't be loaded.");
     }
 
     // ====== File system access errors ======
     public static Message CollectionDirectoryCreate(ComponentName collectionName) {
-        return new Message(
-            string.Format("Directory for collection '{0}' couldn't be created.", collectionName)
-        );
+        return new Message($"Directory for collection '{collectionName}' couldn't be created.");
     }
 
     public static Message CollectionDirectoryRemove(ComponentName collectionName) {
-        return new Message(
-            string.Format("Directory for collection '{0}' couldn't be removed.", collectionName)
-        );
+        return new Message($"Directory for collection '{collectionName}' couldn't be removed.");
     }
 
     public static Message IndexDirectoryCreate(ComponentName indexName) {
@@ -109,21 +82,15 @@ internal static class ErrorMessages {
     }
 
     public static Message DocumentFileCreate(ComponentName documentName) {
-        return new Message(
-            string.Format("File for document '{0}' couldn't be created.", documentName)
-        );
+        return new Message($"File for document '{documentName}' couldn't be created.");
     }
 
     public static Message DocumentFileRemove(ComponentName documentName) {
-        return new Message(
-            string.Format("File for document '{0}' couldn't be removed.", documentName)
-        );
+        return new Message($"File for document '{documentName}' couldn't be removed.");
     }
 
     public static Message DocumentFileRead(ComponentName documentName) {
-        return new Message(
-            string.Format("File for document '{0}' couldn't be read.", documentName)
-        );
+        return new Message($"File for document '{documentName}' couldn't be read.");
     }
 
     public static Message FileRead(ComponentPath path) {
@@ -131,15 +98,11 @@ internal static class ErrorMessages {
     }
 
     public static Message ComponentAsJsonSave(ComponentPath path) {
-        return new Message(
-            string.Format("Component '{0}' couldn't be saved into json file.", path)
-        );
+        return new Message($"Component '{path}' couldn't be saved into json file.");
     }
 
     public static Message ComponentFromJsonLoad(ComponentPath path) {
-        return new Message(
-            string.Format("Component '{0}' couldn't be loaded from json file.", path)
-        );
+        return new Message($"Component '{path}' couldn't be loaded from json file.");
     }
 
     // ====== Component build errors ======
@@ -147,24 +110,16 @@ internal static class ErrorMessages {
         return new Message("Database couldn't be created.");
     }
     public static Message DocumentCreate(ComponentName documentName) {
-        return new Message(
-            string.Format("Document '{0}' couldn't be created.", documentName)
-        );
+        return new Message($"Document '{documentName}' couldn't be created.");
     }
     public static Message StatsCreate(ComponentName documentName) {
-        return new Message(
-            string.Format("Document statistics '{0}' couldn't be created.", documentName)
-        );
+        return new Message($"Document statistics '{documentName}' couldn't be created.");
     }
     public static Message IndexCreate(ComponentName indexName) {
-        return new Message(
-            string.Format("Index '{0}' couldn't be created.", indexName)
-        );
+        return new Message($"Index '{indexName}' couldn't be created.");
     }
     public static Message CollectionCreate(ComponentName collectionName) {
-        return new Message(
-            string.Format("Collection '{0}' couldn't be created.", collectionName)
-        );
+        return new Message($"Collection '{collectionName}' couldn't be created.");
     }
 
     // ====== Command not supported for server
