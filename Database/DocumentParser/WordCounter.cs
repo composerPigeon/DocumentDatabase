@@ -1,7 +1,7 @@
 namespace DatabaseNS.DocumentParserNS;
 
-using DatabaseNS.Components;
 
+// Incrementally calculates absolute term frequiencies 
 internal class WordCounter {
     private Dictionary<string, ulong> _wordCounts;
     private ulong _maxCount;
@@ -11,6 +11,7 @@ internal class WordCounter {
         _maxCount = 0;
     }
 
+    // increments frequency of words
     public void AddWord(string word) {
         ulong count;
         if (_wordCounts.ContainsKey(word)) {
@@ -25,6 +26,7 @@ internal class WordCounter {
             _maxCount = count;
     }
 
+    // Parse absolute frequiencies to realitve one, which are used later in inverted index
     public Dictionary<string, double> Calculate() {
         var counts = new Dictionary<string, double>();
 
