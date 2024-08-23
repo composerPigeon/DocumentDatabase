@@ -4,6 +4,7 @@ using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.CommandParserNS.Commands;
 
+// Parse inputted string to a valid Command instance
 internal static class CommandParser {
 
     public static Command Parse(string command) {

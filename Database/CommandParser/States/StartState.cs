@@ -4,6 +4,7 @@ using DatabaseNS.Tokenization;
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.CommandParserNS.Commands;
 
+// First state of the state machine
 internal class StartState : State {
     public StartState() : base() {}
     public override State NextState(Token token) {

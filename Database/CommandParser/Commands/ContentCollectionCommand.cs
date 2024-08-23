@@ -2,6 +2,7 @@ namespace DatabaseNS.CommandParserNS.Commands;
 
 using DatabaseNS.Components.Values;
 
+// command which operates with collection, but contains some additional content
 internal class ContentCollectionCommand : CollectionCommand, IContentCommand {
     private string[] _content;
     public ContentCollectionCommand(ComponentName collection, string[] content, CommandType type, string strCmd) : base(collection, type, strCmd) {

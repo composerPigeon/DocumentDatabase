@@ -2,6 +2,7 @@ namespace DatabaseNS.CommandParserNS.States;
 
 using DatabaseNS.Tokenization;
 
+// State when first word in the stream was "remove"
 internal class RemoveState : BufferState {
 
     public RemoveState(State state) : base(state, BufferType.One) {}

@@ -2,6 +2,7 @@ using DatabaseNS.FileSystem;
 
 namespace DatabaseNS.CommandParserNS.Commands;
 
+// API which ensures that Content command will have appropriate functions for handling content
 internal interface IContentCommand {
     public string[] Content { get; }
 

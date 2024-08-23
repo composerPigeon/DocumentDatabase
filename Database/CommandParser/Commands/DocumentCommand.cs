@@ -2,6 +2,7 @@ namespace DatabaseNS.CommandParserNS.Commands;
 
 using DatabaseNS.Components.Values;
 
+// command which operates with documents
 internal class DocumentCommand : CollectionCommand {
     public ComponentName Document { get; }
 

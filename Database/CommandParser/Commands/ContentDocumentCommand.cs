@@ -2,6 +2,7 @@ namespace DatabaseNS.CommandParserNS.Commands;
 
 using DatabaseNS.Components.Values;
 
+// operates with documents, but contains some additional content
 internal class ContentDocumentCommand : DocumentCommand, IContentCommand {
     private string[] _content;
     string[] IContentCommand.Content {

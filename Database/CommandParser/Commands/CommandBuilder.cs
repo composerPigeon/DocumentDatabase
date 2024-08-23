@@ -3,6 +3,7 @@ namespace DatabaseNS.CommandParserNS.Commands;
 using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 
+// Checks setted properties and based on them create correct instance of command
 internal class CommandBuilder {
     public CommandType? Type { set; private get;}
     public ComponentName? Collection { set; private get;}

@@ -2,6 +2,7 @@ using DatabaseNS.Tokenization;
 
 namespace DatabaseNS.CommandParserNS.States;
 
+// State when first word in the stream was "find"
 internal class FindState : BufferState {
     public FindState(State state) : base(state, BufferType.Any) {}
 

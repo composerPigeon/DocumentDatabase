@@ -4,6 +4,7 @@ using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 using DatabaseNS.Tokenization;
 
+// State which expects to find some words which sould be added to internal state buffer. This buffer is then handled when the state is changing to different one 
 internal abstract class BufferState : State {
 
     private int _maxBufferCount;

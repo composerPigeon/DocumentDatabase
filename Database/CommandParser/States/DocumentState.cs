@@ -2,6 +2,7 @@ using DatabaseNS.Tokenization;
 
 namespace DatabaseNS.CommandParserNS.States;
 
+// State which expects to find documentName and then some key word to change the state
 internal class DocumentState : SplitTokenBufferState {
     public DocumentState(State state, Token splitToken) : base(state, BufferType.One, splitToken) {}
 
