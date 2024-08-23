@@ -31,7 +31,13 @@ public class Program
 
         app.MapPost("/", async (HttpRequest request) => {
             string body = await new StreamReader(request.Body).ReadToEndAsync();
-            DatabaseRequest dbRequest = JsonSerializer.Deserialize<DatabaseRequest>(body)!;
+            DatabaseRequest dbRequest;
+            try {
+                dbRequest = JsonSerializer.Deserialize<DatabaseRequest>(body)!;
+            } catch (JsonException) {
+                return Results.BadRequest(new {Error = ErrorMessages.InvalidJsonOnEndpoint(body).ToString()});
+            }
+            
             Result result = driver.Execute(dbRequest.Command);
             switch (result.Type) {
                 case ResultType.Ok:
@@ -52,7 +58,7 @@ public class Program
     private static void runShell() {
         DatabaseDriver database = DatabaseDriver.InitializeDriver(DriverType.Shell);
         _logger.LogInfo(CorrectMessages.ConsoleReady());
-        
+
         while (true) {
             string? input = Console.ReadLine();
 

@@ -138,4 +138,10 @@ public static class ErrorMessages {
     public static Message NoArgumentProvided() {
         return new Message("First argument must be 'server' or 'console' depends on which application you'd like to run. No argument was given.");
     }
+
+    // ======= Invalid json on server API ======
+    public static Message InvalidJsonOnEndpoint(string content) {
+        return new Message($"Inputted content '{content}' is not valid json.");
+    } 
+
 }
