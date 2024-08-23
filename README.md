@@ -2,7 +2,6 @@
 This piece of software is simple database for storing plain text documents and they can be searched based on key words specified by user. Whole system uses vector model and inverted index implementation for more effective information retrieval.
 
 ## Installation
-- When you fork and download this project program expects folder `data` to be present and have unlimited access to (if not, it will create one)
 - after downloading run command `dotnet run --project Server/Server.csproj server` which will trigger the database and then it should be running as a server
 - if you would like to run database as a console application, then run `dotnet run --project Server/Server.csproj console`
 
