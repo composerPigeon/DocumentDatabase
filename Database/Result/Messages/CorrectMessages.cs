@@ -58,4 +58,9 @@ public class CorrectMessages {
         return new Message($"All of the documents were loaded to collection '{collection}'.");
     }
 
+    // ======= Command line ======
+    public static Message ConsoleReady() {
+        return new Message("Console is ready.");
+    }
+
 }

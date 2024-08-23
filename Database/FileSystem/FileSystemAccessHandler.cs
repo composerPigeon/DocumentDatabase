@@ -1,7 +1,6 @@
 namespace DatabaseNS.FileSystem;
 
 using System.Text.Json;
-
 using DatabaseNS.Components;
 using DatabaseNS.Components.IndexNS;
 using DatabaseNS.Components.Values;
@@ -13,7 +12,7 @@ internal static class FileSystemAccessHandler {
 
     private static JsonSerializerOptions jsonSerializerOptions = initOptions();
     private static readonly ComponentPath INDEX_DIR = ".index".AsPath();
-    public static readonly ComponentPath DATA_DIR = "data".AsPath();
+    public static readonly ComponentPath DATA_DIR = Path.Combine(AppContext.BaseDirectory, "data").AsPath();
 
     // Initialize JsonSerailiyer options used to serialize and deserialize instances of DatabaseComponent to json 
     private static JsonSerializerOptions initOptions() {

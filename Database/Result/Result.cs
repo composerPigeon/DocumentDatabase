@@ -10,7 +10,8 @@ using System.Text.Json.Serialization;
 // strcut which represents the result of command processing
 public struct Result {
     public Message Message { get; init;}
-    public Exception? Cause { get; init;}
+    // Information about exception causing some error
+    public Dictionary<string, string?>? Cause { get; init;}
     public ResultType Type { get; init;}
 
     private Result(Message message, ResultType type) {
@@ -21,7 +22,11 @@ public struct Result {
     private Result(Message message, ResultType type, Exception cause) {
         Message = message;
         Type = type;
-        Cause = cause;
+        Cause = new Dictionary<string, string?>{
+            {"Message", cause.Message},
+            {"StackTrace", cause.StackTrace},
+            {"Type", cause.GetType().ToString()}
+        };
     }
 
     // static methods for getting instance of specified handlers

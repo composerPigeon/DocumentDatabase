@@ -3,8 +3,8 @@ This piece of software is simple database for storing plain text documents and t
 
 ## Installation
 - When you fork and download this project program expects folder `data` to be present and have unlimited access to (if not, it will create one)
-- after downloading run command `dotnet run --project Server/Server.csproj` which will trigger the database and then it should be running as a server
-- if you would like to run database as a console application, then run `dotnet run --project Database/Database.csproj`
+- after downloading run command `dotnet run --project Server/Server.csproj server` which will trigger the database and then it should be running as a server
+- if you would like to run database as a console application, then run `dotnet run --project Server/Server.csproj console`
 
 ## API
 - server will run on localhost:4696 (if not, the correct url will be displayed in console when the database load)
@@ -28,11 +28,12 @@ This piece of software is simple database for storing plain text documents and t
     - Command which will delete existent collection of specified name
 - `TRESHHOLD <value> FOR <collectionName>`
     - sets new query treshhold for specified collection
-- `LOAD <directory> TO <collectionName>`
+- `LOAD ${<directory>}$ TO <collectionName>`
     - Command which will work only in console application
     - Takes all txt documents in inputted directory and bulk load them as new documents to specified collection
         - if specified collection do not exist, then it will create new one
         - it will end with error if the directory does not conatin any txt files
+    - `${...}$` are delimiters and anything between them is taken as it is and used as a directory path
 - `ADD ${<documentContent>}$ AS <documentName> TO <colllectionName>`
     - Command which will create new document of given name and content in specified collection
     - `${...}$` are content delimiters and anything between them is taken as it is and saved as a document content
