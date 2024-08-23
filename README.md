@@ -15,7 +15,9 @@ This piece of software is simple database for storing plain text documents and t
 
 ## User tips
 - keywords for commands are written here in uppercase, but in fact the command processing is case independent
-- text is case sensitive when it is saved as a document, but is again case independent when the text processing for text indexing is happening
+- text is case sensitive when it is saved as a document, but is again case independent when the text processing for text indexing is happenin
+- Project contains folder 'ExampleData', which contains folder 'anim' (animals), which can be loaded to your database using load command from the list below as a collection.
+    - it's recommended to input to load command the absolute path of directory
 
 ### Commands
 - `LIST`
@@ -32,7 +34,7 @@ This piece of software is simple database for storing plain text documents and t
     - Command which will work only in console application
     - Takes all txt documents in inputted directory and bulk load them as new documents to specified collection
         - if specified collection do not exist, then it will create new one
-        - it will end with error if the directory does not conatin any txt files
+        - it will end with error if the directory does not contain any txt files or the directory does not exist
     - `${...}$` are delimiters and anything between them is taken as it is and used as a directory path
 - `ADD ${<documentContent>}$ AS <documentName> TO <colllectionName>`
     - Command which will create new document of given name and content in specified collection
