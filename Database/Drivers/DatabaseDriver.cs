@@ -30,6 +30,7 @@ public class DatabaseDriver {
         }
     }
 
+    // process commands of create type
     private Result processCreateCmd(Command command) {
         if (command is ContentDocumentCommand contentDocumentCommand) {
             string content;
@@ -45,6 +46,7 @@ public class DatabaseDriver {
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
+    // process commands of delete type
     private Result processDeleteCmd(Command command) {
         if (command is DocumentCommand documentCommand) {
             return Database.RemoveDocument(documentCommand.Collection, documentCommand.Document);
@@ -53,6 +55,7 @@ public class DatabaseDriver {
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
+    // process commands of find type
     private Result processFindCmd(Command command) {
         if (command is ContentCollectionCommand contentCollectionCommand) {
            return Database.Find(contentCollectionCommand.Collection, contentCollectionCommand.Content); 
@@ -62,6 +65,7 @@ public class DatabaseDriver {
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
+    // process commands of load type
     private Result processLoadCmd(Command command) {
         if (command is ContentCollectionCommand contentCollectionCommand) {
             ComponentPath path;
@@ -77,6 +81,7 @@ public class DatabaseDriver {
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
+    // process commands of treshhold type
     private Result processTreshholdCmd(Command command) {
         if (command is ContentCollectionCommand contentCollectionCmd) {
             double value;
@@ -86,6 +91,7 @@ public class DatabaseDriver {
         return Handlers.Error.HandleCommandInvalid(command.Value);
     }
 
+    // process commands of list type
     private Result processListCmd(Command command) {
         if (command is CollectionCommand collectionCommand) {
             return Database.ListDocuments(collectionCommand.Collection);
@@ -94,6 +100,7 @@ public class DatabaseDriver {
         }
     }
 
+    // matches command to its type and process these subtypes
     internal Result ProcessCommand(Command command) {
         switch (command.Type) {
             case CommandType.Create:
@@ -113,6 +120,7 @@ public class DatabaseDriver {
         }
     }
 
+    // Initializes driver for some database based on inputted DriverType. Loading of database is happening here.
     public static DatabaseDriver InitializeDriver(DriverType type) {
         var database = FileSystemAccessHandler.LoadDatabase();
         return new DatabaseDriver(database, type);
