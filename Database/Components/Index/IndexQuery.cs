@@ -3,6 +3,7 @@ namespace DatabaseNS.Components.IndexNS;
 using System.Collections;
 using DatabaseNS.Components.Values;
 
+// Unit used when iterating over the IndexQuery. Used for more type information
 internal struct IndexQueryRecord {
     public ComponentName Name {get;}
     public double[] Values { get;}
@@ -13,6 +14,7 @@ internal struct IndexQueryRecord {
     }
 }
 
+// class which projects relative documents from the index and implements ienumrable so the result can be iterated
 internal class IndexQuery : IEnumerable<IndexQueryRecord> {
 
     SortedList<ComponentName, double>[] _termLists;

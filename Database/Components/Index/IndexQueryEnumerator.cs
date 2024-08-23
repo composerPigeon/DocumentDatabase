@@ -3,6 +3,7 @@ namespace DatabaseNS.Components.IndexNS;
 using System.Collections;
 using DatabaseNS.Components.Values;
 
+// Implementation od enumerating the relative documents and calculates its scores which are relative to inputtted query
 internal class IndexQueryEnumerator : IEnumerator<IndexQueryRecord> {
 
     private SortedList<ComponentName, double>[] _termLists;
@@ -36,6 +37,7 @@ internal class IndexQueryEnumerator : IEnumerator<IndexQueryRecord> {
         return false;
     }
 
+    // find current document with minimal name (documents are sorted by their names) 
     private Tuple<ComponentName?, int> findMinDocument() {
         ComponentName? name = null;
         int index = -1;
@@ -63,6 +65,7 @@ internal class IndexQueryEnumerator : IEnumerator<IndexQueryRecord> {
             return new Tuple<ComponentName?, int>(null, index);
     }
 
+    // For minimal document then create the vector and fill it with term frequiencies
     private void fillRestValues(List<double> values, int minDocIndex, ComponentName minDocName) {
         for (int i = minDocIndex; i < _inxs.Length; i++) {
             int actualIndex = _inxs[i];
@@ -80,6 +83,7 @@ internal class IndexQueryEnumerator : IEnumerator<IndexQueryRecord> {
         }
     }
 
+    // Create IndexQueryRecord for current minimal document and its vector
     private IndexQueryRecord? getRecordForMinDocument() {
         (ComponentName? minDocName, int minDocIndex) = findMinDocument();
 

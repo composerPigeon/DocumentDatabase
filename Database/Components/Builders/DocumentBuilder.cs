@@ -1,6 +1,5 @@
 namespace DatabaseNS.Components.Builders;
 
-
 using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
 

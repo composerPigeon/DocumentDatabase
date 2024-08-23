@@ -16,6 +16,7 @@ internal class DocumentStats : DatabaseComponent {
         WordsTF = wordsTF;
     }
 
+    // create based on content
     public static DocumentStats Create(ComponentName name, ComponentPath path, string documentContent) {
         WordCounter counter = DocumentParser.Parse(documentContent);
         DocumentStatsBuilder builder = CreateBuilder();
@@ -25,6 +26,7 @@ internal class DocumentStats : DatabaseComponent {
         return builder.Build();
     }
 
+    // create based on filePath which is loaded as document content
     public static DocumentStats Create(ComponentName name, ComponentPath path, ComponentPath filePath) {
         WordCounter counter = DocumentParser.Parse(filePath);
         DocumentStatsBuilder builder = CreateBuilder();

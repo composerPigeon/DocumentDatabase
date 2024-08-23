@@ -11,6 +11,7 @@ internal abstract class DatabaseComponent {
     }
 }
 
+// Used for specifying ComponentType in messages
 internal enum ComponentType {
     Database,
     Collection,

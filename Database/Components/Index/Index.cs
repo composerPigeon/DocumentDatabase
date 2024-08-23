@@ -8,14 +8,17 @@ using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.ResultNS.Handlers;
 
+// Implementation of inverted index in database
 internal class Index : DatabaseComponent {
 
     [JsonInclude]
     private ulong _documentCount;
 
+    //for each word contains count of documents, where the word is present
     [JsonInclude]
     private Dictionary<string, ulong> _wordDocumentCounts;
 
+    // for each word contains list of documents, where teh word is present and also word's relative frequency in the document
     [JsonInclude]
     private Dictionary<string, SortedList<ComponentName, double>> _wordByDocumentTF;
 
@@ -53,6 +56,7 @@ internal class Index : DatabaseComponent {
         
     }
 
+    // reads the document statistics and incrementally update the term frequencies and document counts in index
     private void addDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount += 1;
         foreach(var entry in stats.WordsTF) {
@@ -95,6 +99,7 @@ internal class Index : DatabaseComponent {
         
     }
 
+    // substract term frequiencies from index based on document values and thus remove the document from index
     private void removeDocument(ComponentName documentName, DocumentStats stats) {
         _documentCount -= 1;
         foreach(var entry in stats.WordsTF) {
@@ -119,6 +124,7 @@ internal class Index : DatabaseComponent {
         
     }
 
+    // query is term frequencies for inputted key words, document is vector representing term frequencies of these keywords in specific document, idf = inverse document frequencies of this document in collection
     private double calculateCosineSimilarity(double[] query, double[] document, double[] idfs) {
         if (query.Length == document.Length) {
             double result = 0;
@@ -134,6 +140,7 @@ internal class Index : DatabaseComponent {
         throw Handlers.Exception.ThrowQueryInvalid(query.Length, document.Length);
     }
 
+    // calculate the term frequencies for inputted key words 
     private Dictionary<string, double> getQueryStats(string[] keyWords) {
         var tfresult = new Dictionary<string, int>();
         int maxCount = 0;
@@ -162,6 +169,7 @@ internal class Index : DatabaseComponent {
         return result.ToArray();
     }
 
+    // calculates document vector for specified set of keywords (query)
     private double[] getQueryDocument(Dictionary<string, double> queryStats, double[] idfs, string[] keyWords) {
         List<double> result = new List<double>();
         if (queryStats.Count == idfs.Length && queryStats.Count == keyWords.Length) {
@@ -173,6 +181,7 @@ internal class Index : DatabaseComponent {
         return result.ToArray();
     }
 
+    // Iterates through relative documents and calculates the result of ind command
     public List<IndexRecord> Find(string[] inputKeyWords) {
         Dictionary<string, double> queryStats = getQueryStats(inputKeyWords);
         string[] keyWords = queryStats.Keys.ToArray();

@@ -1,7 +1,7 @@
+namespace DatabaseNS.Components.Builders;
+
 using DatabaseNS.Components.Values;
 using DatabaseNS.ResultNS.Handlers;
-
-namespace DatabaseNS.Components.Builders;
 
 internal class DocumentStatsBuilder : DatabaseComponentBuilder<DocumentStats> {
     private Func<ComponentName, ComponentPath, Dictionary<string, double>, DocumentStats> _init;
