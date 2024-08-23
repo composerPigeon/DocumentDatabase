@@ -4,6 +4,7 @@ using DatabaseNS.Drivers;
 using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.LoggerNS;
 
+// Program for console application
 class Program
 {
 
