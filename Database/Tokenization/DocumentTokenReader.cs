@@ -18,6 +18,7 @@ internal class DocumentTokenReader : TokenReader {
 
     public DocumentTokenReader(string content) : this(new StringReader(content)) {}
 
+    // Reads one token from inputted stream
     public override Token Read() {
         int x = _reader.Read();
 

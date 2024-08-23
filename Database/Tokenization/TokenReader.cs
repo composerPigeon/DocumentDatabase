@@ -6,6 +6,7 @@ internal enum ReaderState {
     Out
 }
 
+// Abstract class which represents token reader of any type, implements IDisposable
 internal abstract class TokenReader : IDisposable {
     protected TextReader _reader;
 

@@ -13,6 +13,7 @@ internal class CommandTokenReader : TokenReader {
         _buffer = new StringBuilder();
     }
 
+    // Reads one token from inputted stream
     public override Token Read() {
         int x = _reader.Read();
 

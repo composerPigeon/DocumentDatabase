@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace DatabaseNS.Tokenization;
 
+// Represents one unit of text stream, usually word or EOF
 internal readonly struct Token : IEquatable<Token> {
     public string? Word {get; }
     public bool IsLast {get;}
