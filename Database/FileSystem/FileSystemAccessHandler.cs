@@ -8,12 +8,14 @@ using DatabaseNS.Components.Values;
 using DatabaseNS.Components.Builders;
 using DatabaseNS.ResultNS.Handlers;
 
+// Contains functions with API for database to access FileSystem entries
 internal static class FileSystemAccessHandler {
 
     private static JsonSerializerOptions jsonSerializerOptions = initOptions();
     private static readonly ComponentPath INDEX_DIR = ".index".AsPath();
     public static readonly ComponentPath DATA_DIR = "data".AsPath();
 
+    // Initialize JsonSerailiyer options used to serialize and deserialize instances of DatabaseComponent to json 
     private static JsonSerializerOptions initOptions() {
         var options = new JsonSerializerOptions {
             WriteIndented = true,
@@ -22,12 +24,14 @@ internal static class FileSystemAccessHandler {
         return options;
     }
 
+    // Enumerates all of the entries on inputted path
     public static IEnumerable<ComponentPath> ListDirectory(ComponentPath directory) {
         foreach (string stringPath in Directory.EnumerateFileSystemEntries(directory)) {
             yield return stringPath.AsPath();
         }
     }
 
+    // Parse DatabaseComponent to json and write it to file represented by DatabaseComponent.Path property
     private static void writeAsJson<TComponent>(TComponent component)
         where TComponent : DatabaseComponent
     {
@@ -39,18 +43,22 @@ internal static class FileSystemAccessHandler {
         } 
     }
 
+    // For each path gets index directory
     public static ComponentPath GetIndexDirectoryPath(ComponentPath collectionPath) {
         return collectionPath.AppendPath(INDEX_DIR);
     }
 
+    // Gets index file path
     private static ComponentPath getIndexFilePath(ComponentPath collectionPath) {
         return collectionPath.AppendPath(INDEX_DIR).AppendString("index.json");
     }
 
+    // Serializes index to json and writes it to file)
     public static void SaveIndex(Index index) {
         writeAsJson(index);
     }
 
+    // Creates necessary directoies for newly created collection
     public static void AddCollection(Collection collection) {
         try {
             Directory.CreateDirectory(collection.Path);
@@ -59,6 +67,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    // Remove collection directories from file system
     public static void RemoveCollection(Collection collection) {
         try {
             Directory.Delete(collection.Path, true);
@@ -67,6 +76,7 @@ internal static class FileSystemAccessHandler {
         }   
     }
 
+    // Creates index directory for new index
     public static void AddIndex(ComponentPath collectionPath, Index index) {
         try {
             Directory.CreateDirectory(collectionPath.AppendPath(INDEX_DIR));
@@ -76,7 +86,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
-    // Creates files in file system for document and its statistics
+    // Creates files in file system for document content and statistics (term frequencies of document)
     public static void AddDocument(Document document, string content) {
         try {
             File.WriteAllText(document.Path, content);
@@ -86,6 +96,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    // Creates files in file system for new documen. Copies content from specified path and creates statistics
     public static void AddDocument(Document document, ComponentPath filePath) {
         try {
             File.Copy(filePath, document.Path);
@@ -95,6 +106,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    // Remove files of specified document from file system
     public static void RemoveDocument(Document document) {
         try {
             File.Delete(document.Path);
@@ -104,6 +116,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    // Reads content from document file from disk
     public static string ReadDocument(Document document) {
         try {
             return File.ReadAllText(document.Path);
@@ -112,6 +125,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    // Gets Stream reader for docuemnt on specified path
     public static StreamReader OpenFile(ComponentPath path) {
         try {
             return new StreamReader(path);
@@ -123,7 +137,7 @@ internal static class FileSystemAccessHandler {
 
     // ====== Load Section =======
 
-    // help function which loads json content from file and parse its content into instance of DatabaseComponent
+    // loads json content as a instance of specified DatabaseComponent
     private static TComponent loadFromJson<TComponent>(ComponentPath path)
         where TComponent : DatabaseComponent
     {
@@ -139,6 +153,7 @@ internal static class FileSystemAccessHandler {
         }
     }
 
+    // Loads database from data folder
     public static Database LoadDatabase() {
         if (!Directory.Exists(DATA_DIR)) {
             Directory.CreateDirectory(DATA_DIR);
