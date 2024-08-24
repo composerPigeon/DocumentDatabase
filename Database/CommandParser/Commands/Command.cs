@@ -1,7 +1,5 @@
 namespace DatabaseNS.CommandParserNS.Commands;
 
-using DatabaseNS.Components.Values;
-
 // base command class
 internal class Command {
     public string Value { get; }
@@ -12,7 +10,7 @@ internal class Command {
         Value = cmd;
     }
 
-    private static Command empty = new CollectionCommand(ComponentName.Empty, CommandType.Empty, "");
+    private static Command empty = new Command(CommandType.Empty, "");
 
     public static Command Empty {
         get { return empty; }
