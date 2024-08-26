@@ -9,7 +9,7 @@ using DatabaseNS.ResultNS.Exceptions;
 using DatabaseNS.ResultNS.Handlers;
 
 // Implementation of inverted index in database
-internal class Index : DatabaseComponent {
+internal class Index : DatabaseComponent, IDatabaseComponentBuilderCreatable<Index, IndexBuilder>{
 
     [JsonInclude]
     private ulong _documentCount;
@@ -18,7 +18,7 @@ internal class Index : DatabaseComponent {
     [JsonInclude]
     private Dictionary<string, ulong> _wordDocumentCounts;
 
-    // for each word contains list of documents, where teh word is present and also word's relative frequency in the document
+    // for each word contains list of documents, where the word is present and also word's relative frequency in the document
     [JsonInclude]
     private Dictionary<string, SortedList<ComponentName, double>> _wordByDocumentTF;
 
@@ -202,8 +202,5 @@ internal class Index : DatabaseComponent {
 
     public static IndexBuilder CreateBuilder() {
         return new IndexBuilder((name, path) => new Index(name, path));
-    }
-    public static Index Create(ComponentName name, ComponentPath path) {
-        return new Index(name, path);
     }
 }

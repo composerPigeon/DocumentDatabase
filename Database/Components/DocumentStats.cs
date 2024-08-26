@@ -1,12 +1,11 @@
 namespace DatabaseNS.Components;
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using DatabaseNS.Components.Builders;
 using DatabaseNS.Components.Values;
 using DatabaseNS.DocumentParserNS;
 
-internal class DocumentStats : DatabaseComponent {
+internal class DocumentStats : DatabaseComponent, IDatabaseComponentBuilderCreatable<DocumentStats, DocumentStatsBuilder> {
 
     // Word and TermFreq
     public Dictionary<string, double> WordsTF { get;}

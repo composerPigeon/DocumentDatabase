@@ -43,7 +43,7 @@ internal struct ComponentPath {
     // Add name as next part of path
     public ComponentPath AppendName(ComponentName name) {
         return new ComponentPath() {
-            _value = Path.Combine(this._value, name.ToString())
+            _value = Path.Combine(_value, name.ToString())
         };
     }
 

@@ -6,7 +6,7 @@ using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.Handlers;
 
-internal class Document : DatabaseComponent {
+internal class Document : DatabaseComponent, IDatabaseComponentBuilderCreatable<Document, DocumentBuilder>{
     public DocumentStats Stats { get; }
     private Document(ComponentName Name, ComponentPath Path, DocumentStats stats) : base(Name, Path) {
         Stats = stats;

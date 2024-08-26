@@ -6,7 +6,7 @@ using DatabaseNS.ResultNS.Handlers;
 internal class DatabaseBuilder : DatabaseComponentBuilder<Database> {
     public Dictionary<ComponentName, Collection>? Collections { get; set; }
 
-    public Func<Dictionary<ComponentName, Collection>, ComponentPath, Database> _init;
+    private Func<Dictionary<ComponentName, Collection>, ComponentPath, Database> _init;
 
     public DatabaseBuilder(Func<Dictionary<ComponentName, Collection>, ComponentPath, Database> init) {
         _init = init;

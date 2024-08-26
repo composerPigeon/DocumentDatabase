@@ -6,7 +6,7 @@ using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS;
 using DatabaseNS.ResultNS.Handlers;
 
-internal class Database : DatabaseComponent {
+internal class Database : DatabaseComponent, IDatabaseComponentBuilderCreatable<Database, DatabaseBuilder>{
     private Dictionary<ComponentName, Collection> _collections;
 
     private Database(Dictionary<ComponentName, Collection> collections, ComponentPath path) : base(new ComponentName("Database"), path) {

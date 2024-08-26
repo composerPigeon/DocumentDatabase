@@ -17,7 +17,7 @@ internal struct IndexQueryRecord {
 // class which projects relative documents from the index and implements ienumrable so the result can be iterated
 internal class IndexQuery : IEnumerable<IndexQueryRecord> {
 
-    SortedList<ComponentName, double>[] _termLists;
+    private SortedList<ComponentName, double>[] _termLists;
 
     public IndexQuery(string[] keyWords, Dictionary<string, SortedList<ComponentName, double>> wordByDocumentTF) {
         var termLists = new List<SortedList<ComponentName, double>>();

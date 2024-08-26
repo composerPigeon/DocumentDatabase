@@ -8,7 +8,7 @@ using DatabaseNS.ResultNS;
 using DatabaseNS.FileSystem;
 using DatabaseNS.ResultNS.Exceptions;
 
-internal class Collection : DatabaseComponent {
+internal class Collection : DatabaseComponent, IDatabaseComponentBuilderCreatable<Collection, CollectionBuilder>{
     private Dictionary<ComponentName, Document> _documents;
     private Index _index;
 
