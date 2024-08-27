@@ -1,9 +1,8 @@
 namespace Server;
 
 using System.Text.Json.Serialization;
-using System.Text.Json;
 
-public class DatabaseRequest {
+public struct DatabaseRequest {
 
     [JsonPropertyName("command")]
     public string Command { get; }

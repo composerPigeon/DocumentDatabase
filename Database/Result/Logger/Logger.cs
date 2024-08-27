@@ -37,7 +37,7 @@ public class DatabaseLogger {
         _writer.WriteLine($"Error> {message}");
     }
 
-    private class LoggerRecord {
+    private struct LoggerRecord {
         public string? Type { get; init; }
         public string? Command { get; init; }
         public Result Result { get; init; }
