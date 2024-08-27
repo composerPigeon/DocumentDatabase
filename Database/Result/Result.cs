@@ -7,7 +7,7 @@ using DatabaseNS.ResultNS.Handlers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-// strcut which represents the result of command processing
+// struct which represents the result of command processing
 public struct Result {
     public Message Message { get; init;}
     // Information about exception causing some error
@@ -79,7 +79,7 @@ public enum ResultType {
 }
 
 // extension method for getting string from ResultType
-public static class DatabaseResultTypeEtensions {
+public static class ResultTypeEtensions {
     public static string GetString(this ResultType type) {
         switch (type) {
             case ResultType.Ok:
