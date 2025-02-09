@@ -111,7 +111,7 @@ public class DatabaseDriver {
                 return processFindCmd(command);
             case CommandType.Load:
                 return processLoadCmd(command);
-            case CommandType.Treshhold:
+            case CommandType.Threshold:
                 return processTreshholdCmd(command);
             case CommandType.List:
                 return processListCmd(command);

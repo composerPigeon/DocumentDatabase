@@ -3,13 +3,9 @@ namespace DatabaseNS.CommandParserNS.Commands;
 using DatabaseNS.Components.Values;
 
 // command which operates with collection, but contains some additional content
-internal class ContentCollectionCommand : CollectionCommand, IContentCommand {
-    private string[] _content;
-    public ContentCollectionCommand(ComponentName collection, string[] content, CommandType type, string strCmd) : base(collection, type, strCmd) {
-        _content = content;
-    }
-
-    public string[] Content { get { return _content; } }
+internal class ContentCollectionCommand(ComponentName collection, string[] content, CommandType type, string strCmd) : CollectionCommand(collection, type, strCmd), IContentCommand
+{
+    public string[] Content { get; } = content;
 
     public bool TryGetString(int pos, out string value) {
         value = "";

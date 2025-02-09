@@ -1,21 +1,15 @@
+using System.Diagnostics;
+
 namespace DatabaseNS.CommandParserNS.Commands;
 
 using DatabaseNS.Components.Values;
 
 // operates with documents, but contains some additional content
-internal class ContentDocumentCommand : DocumentCommand, IContentCommand {
-    private string[] _content;
-    string[] IContentCommand.Content {
-        get {
-            return _content;
-        }
-    }
-
-    public ContentDocumentCommand(ComponentName document, ComponentName collection, string[] content, CommandType type, string strCmd) : base(document, collection, type, strCmd) {
-        _content = content;
-    }
-
-    public string[] Content { get { return _content; } }
+internal class ContentDocumentCommand(ComponentName document, ComponentName collection, string[] content, CommandType type, string strCmd)
+    : DocumentCommand(document, collection, type, strCmd), IContentCommand
+{
+    public string[] Content { get; } = content;
+    
     public bool TryGetString(int pos, out string value) {
         value = "";
         if (Content.Length > pos && pos >= 0) {
